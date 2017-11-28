@@ -1,0 +1,10 @@
+Pre build script...
+
+...
+
+Post Build script
+
+echo "Build finished for commit $buildPlist, reverting to auto"
+buildPlist=$"$SRCROOT/$INFOPLIST_FILE"
+CFBundleVersion="auto"
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $CFBundleVersion" $buildPlist
