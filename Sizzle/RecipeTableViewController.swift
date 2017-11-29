@@ -36,18 +36,21 @@ class RecipeTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 0
+        return currentRecipe.totalSteps
     }
 
-    /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
+        guard let cell = (tableView.dequeueReusableCell(withIdentifier: "RecipeTableViewCell-ID", for: indexPath) as? HomeTableViewCell) else {
+            fatalError("Error [Recipe]: Could not cast cell as HomeTableViewCell")
+        }
+        
         // Configure the cell...
+        cell.titleLabel.text = currentRecipe.steps[indexPath.row]
+        
 
         return cell
     }
-    */
+
 
     /*
     // Override to support conditional editing of the table view.

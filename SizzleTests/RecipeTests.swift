@@ -25,7 +25,7 @@ class RecipeTests: XCTestCase {
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        recipeUnderTest = Recipe(steps: testSteps)
+        recipeUnderTest = Recipe(title: "Fried Eggs", steps: testSteps)
     }
     
     override func tearDown() {
@@ -44,7 +44,7 @@ class RecipeTests: XCTestCase {
         XCTAssertNil(recipeUnderTest.next())
         
         // test empty list returns nil
-        let emptyRecipe = Recipe(steps: [])
+        let emptyRecipe = Recipe(title: "Nothing", steps: [])
         XCTAssertNil(emptyRecipe.next())
         
     }

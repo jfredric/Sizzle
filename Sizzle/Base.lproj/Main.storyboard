@@ -42,7 +42,6 @@
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="titleLabel" destination="72f-2C-gLj" id="k7h-fE-WVS"/>
-                                    <segue destination="k3d-Kg-xXV" kind="show" id="Ym0-e3-JmO"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -53,6 +52,9 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="yZ4-Og-isw"/>
+                    <connections>
+                        <segue destination="k3d-Kg-xXV" kind="show" identifier="listToRecipeSegue-ID" id="CUG-ra-3d9"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QFI-xp-N7h" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -79,13 +81,13 @@
         <!--Recipe Table View Controller-->
         <scene sceneID="bNQ-ae-KLj">
             <objects>
-                <tableViewController id="k3d-Kg-xXV" userLabel="Recipe Table View Controller" customClass="HomeTableViewController" customModule="Sizzle" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController id="k3d-Kg-xXV" userLabel="Recipe Table View Controller" customClass="RecipeTableViewController" customModule="Sizzle" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="qQc-Zf-69s">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="HomeTableViewCell-ID" id="Gdj-JD-Oc0" userLabel="Home Table View Cell" customClass="HomeTableViewCell" customModule="Sizzle" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="RecipeTableViewCell-ID" id="Gdj-JD-Oc0" userLabel="Home Table View Cell" customClass="HomeTableViewCell" customModule="Sizzle" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Gdj-JD-Oc0" id="IYW-Z1-mpl">

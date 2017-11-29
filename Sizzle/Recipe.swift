@@ -10,8 +10,11 @@ import Foundation
 
 class Recipe {
     public var title: String
+    public var totalSteps: Int {
+        return steps.count
+    }
     private var currentStep: Int?
-    private var steps: [String]
+    public var steps: [String]
     
     init(title: String, steps: [String]) {
         self.title = title
