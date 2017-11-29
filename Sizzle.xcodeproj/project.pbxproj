@@ -138,6 +138,7 @@
 				EFCEA2C81FBC26A3006CFE19 /* Sources */,
 				EFCEA2C91FBC26A3006CFE19 /* Frameworks */,
 				EFCEA2CA1FBC26A3006CFE19 /* Resources */,
+				EF00988A1FCE3B94000485B9 /* Set Build Version Number */,
 			);
 			buildRules = (
 			);
@@ -256,6 +257,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		EF00988A1FCE3B94000485B9 /* Set Build Version Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Set Build Version Number";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "$SRCROOT/scripts/set-build.sh";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		EFCEA2C81FBC26A3006CFE19 /* Sources */ = {
