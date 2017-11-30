@@ -13,6 +13,7 @@
 		EF2B6F041FCCCAAC001E361B /* HomeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2B6F031FCCCAAC001E361B /* HomeTableViewCell.swift */; };
 		EF2B6F061FCCD2E2001E361B /* RecipeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF2B6F051FCCD2E2001E361B /* RecipeTableViewController.swift */; };
 		EF6934081FCFAC6600E803B0 /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6934071FCFAC6600E803B0 /* Alerts.swift */; };
+		EF69340A1FD083E600E803B0 /* VoiceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF6934091FD083E600E803B0 /* VoiceController.swift */; };
 		EFCEA2D01FBC26A3006CFE19 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFCEA2CF1FBC26A3006CFE19 /* AppDelegate.swift */; };
 		EFCEA2D51FBC26A3006CFE19 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EFCEA2D31FBC26A3006CFE19 /* Main.storyboard */; };
 		EFCEA2D81FBC26A3006CFE19 /* Sizzle.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = EFCEA2D61FBC26A3006CFE19 /* Sizzle.xcdatamodeld */; };
@@ -46,6 +47,7 @@
 		EF2B6F031FCCCAAC001E361B /* HomeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableViewCell.swift; sourceTree = "<group>"; };
 		EF2B6F051FCCD2E2001E361B /* RecipeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeTableViewController.swift; sourceTree = "<group>"; };
 		EF6934071FCFAC6600E803B0 /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
+		EF6934091FD083E600E803B0 /* VoiceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceController.swift; sourceTree = "<group>"; };
 		EFCEA2CC1FBC26A3006CFE19 /* Sizzle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sizzle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EFCEA2CF1FBC26A3006CFE19 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EFCEA2D41FBC26A3006CFE19 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				EFCEA2CF1FBC26A3006CFE19 /* AppDelegate.swift */,
 				EF2B6EFD1FCB6397001E361B /* Recipe.swift */,
 				EFCEA2D31FBC26A3006CFE19 /* Main.storyboard */,
+				EF6934091FD083E600E803B0 /* VoiceController.swift */,
 				EF2B6F051FCCD2E2001E361B /* RecipeTableViewController.swift */,
 				EF2B6F011FCCC67D001E361B /* HomeTableViewController.swift */,
 				EF2B6F031FCCCAAC001E361B /* HomeTableViewCell.swift */,
@@ -307,6 +310,7 @@
 				EF2B6F041FCCCAAC001E361B /* HomeTableViewCell.swift in Sources */,
 				EFCEA2D01FBC26A3006CFE19 /* AppDelegate.swift in Sources */,
 				EF2B6F061FCCD2E2001E361B /* RecipeTableViewController.swift in Sources */,
+				EF69340A1FD083E600E803B0 /* VoiceController.swift in Sources */,
 				EFCEA2D81FBC26A3006CFE19 /* Sizzle.xcdatamodeld in Sources */,
 				EF6934081FCFAC6600E803B0 /* Alerts.swift in Sources */,
 				EF2B6EFE1FCB6397001E361B /* Recipe.swift in Sources */,
