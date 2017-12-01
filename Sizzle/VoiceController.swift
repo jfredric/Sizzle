@@ -82,12 +82,13 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
     
     // initilize and begin recording speech
     func startRecordingSpeech() {
-        print("Log [VoiceController]: Starting initial voice recognition.")
-        if !checkSpeechPermissions() {
-            return
+        print("Log [VoiceController]: Attempting to initial voice recognition.")
+        checkSpeechPermissions() { authorized in
+            if authorized {
+                self.setupRecognition()
+                self.startSpeechRecognitionTask()
+            }
         }
-        setupRecognition()
-        startSpeechRecognitionTask()
     }
     
     // set up engine and recognizer
@@ -145,39 +146,39 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
         })
     }
     
-    func checkSpeechPermissions() -> Bool {
+    func checkSpeechPermissions(completion handler: @escaping (Bool)->Void) {
         var status = SFSpeechRecognizer.authorizationStatus()
         
-        if status == .notDetermined {
-            requestPermissionAlert(title: "Speech", message: "Would you like to let the app listen for voice commands? This will only happen while cooking.", from: nil, handler: { (confirmed) in
+        switch status {
+        case .notDetermined:
+            requestPermissionAlert(title: "Speech Recognition", message: "Would you like to let the app listen for voice commands? This will only happen while cooking.", from: nil, handler: { (confirmed) in
                 if confirmed {
                     SFSpeechRecognizer.requestAuthorization { (authorizationStatus) in
                         status = authorizationStatus
                         if status == .denied {
-                            print("Warning [RecipeView]: User has denied speech recognition permissions")
+                            print("Warning [VoiceController]: User has denied speech recognition permissions")
+                            handler(false)
+                        }
+                        if status == .authorized {
+                            print("Log [VoiceController]: User authorized app for voice recognition")
+                            handler(true)
                         }
                     }
                 }
             })
-        }
-        
-        switch status {
         case .authorized:
             print("Log [VoiceController]: authorized for voice recognition.")
-            return true
+            handler(true)
         case .denied:
             let warningText = "Permissions for speech recognition were denied. Change permissions in setting to use the app's voice recognition features."
             messageAlert(title: "Warning", message: warningText, from: nil)
             print("Log [VoiceController]:", warningText)
-            return false
+            handler(false)
         case .restricted:
             let warningText = "Speech recognition is restricted on this device."
             messageAlert(title: "Warning", message: warningText, from: nil)
             print("Log [VoiceController]:", warningText)
-            return false
-        case .notDetermined:
-            print("Warning [VoiceController]: Status not determined. How did we get here?")
-            return false
+            handler(false)
         }
     }
 }
