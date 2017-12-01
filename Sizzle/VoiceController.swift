@@ -1,5 +1,5 @@
 //
-//  VoiceRecognitionController.swift
+//  VoiceController.swift
 //  Sizzle
 //
 //  Created by Joshua Fredrickson on 11/30/17.
@@ -9,11 +9,21 @@
 import AVFoundation
 import Speech
 
-protocol VoiceRecognitionDelegate {
+protocol VoiceStatusDisplayDelegate {
     func speechRecognized(text: String)
 }
 
-class VoiceController: NSObject, SFSpeechRecognizerDelegate {
+protocol VoiceCommandsDelegate {
+    func executeNextCommand()
+}
+
+enum VoiceStatus {
+    case recognizing
+    case dictating
+    case idle
+}
+
+class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizerDelegate, RecipeDictateDelegate {
     
     // Text to Speech
     let speechSynthesizer = AVSpeechSynthesizer()
@@ -23,16 +33,49 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate {
     let speechRecognizer: SFSpeechRecognizer? = SFSpeechRecognizer()
     var request = SFSpeechAudioBufferRecognitionRequest()
     var recognitionTask: SFSpeechRecognitionTask?
-    var status = false
     
-    // voice recognition delegate
-    var voiceHandler: VoiceRecognitionDelegate?
+    // voice recognition delegates
+    var displayDelegate: VoiceStatusDisplayDelegate?
+    var commandDelegate: VoiceCommandsDelegate?
+    
+    var status: VoiceStatus = .idle
+    
+    // MARK: INITIALIZER
+    
+    override init() {
+        super.init()
+        
+        // set speech delegates
+        speechSynthesizer.delegate = self
+        speechRecognizer?.delegate = self
+    }
     
     // MARK: TEXT TO SPEECH
     
     func speak(text: String) {
         let speechUtterance = AVSpeechUtterance(string: text)
         speechSynthesizer.speak(speechUtterance)
+    }
+    
+    
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        request = SFSpeechAudioBufferRecognitionRequest()
+        startSpeechRecognitionTask()
+        displayDelegate?.speechRecognized(text: "")
+    }
+    
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
+        recognitionTask?.finish()
+    }
+    
+    // MARK: RECIPE DICTATE DELEGATE
+    func dictate(stepText: String) {
+        speak(text: stepText)
+    }
+    
+    func dictateFinished() {
+        recognitionTask?.finish()
+        displayDelegate?.speechRecognized(text: "")
     }
     
     // MARK: VOICE RECOGNITION
@@ -42,17 +85,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate {
         if !checkSpeechPermissions() {
             return
         }
-        
-        if status == false {
-            setupRecognition()
-            startSpeechRecognitionTask()
-        }
-        
-    }
-    
-    func restartRecordingSpeech() {
-        recognitionTask?.finish()
-        request = SFSpeechAudioBufferRecognitionRequest()
+        setupRecognition()
         startSpeechRecognitionTask()
     }
     
@@ -78,20 +111,34 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate {
     
     // prepare and start recording
     private func startSpeechRecognitionTask() {
-        status = true
-        print("debug: starting new session")
+        
+        status = .recognizing
+        
         // Call the recognizer
         recognitionTask = speechRecognizer?.recognitionTask(with: request, resultHandler: { (result, error) in
-            if let result = result {
-                let bestString = result.bestTranscription.formattedString
-                // use the string
-                if self.voiceHandler != nil {
-                    self.voiceHandler?.speechRecognized(text: bestString)
-                } else {
-                    print("Warning [VoiceController]: No delegate set for voice input handling")
+            if self.status == VoiceStatus.recognizing {
+                if let result = result {
+                    let bestString = result.bestTranscription.formattedString
+                    // use the string
+                    
+                    // update the display text
+                    if self.displayDelegate != nil {
+                        self.displayDelegate?.speechRecognized(text: bestString)
+                    } else {
+                        print("Warning [VoiceController]: No delegate set for voice input handling")
+                    }
+                    
+                    // check for commands
+                    if bestString.lowercased().contains("next") {
+                        self.status = .dictating
+                        self.recognitionTask?.finish()
+                        self.displayDelegate?.speechRecognized(text: "NEXT")
+                        self.commandDelegate?.executeNextCommand()
+                    }
+                    
+                } else if let error = error {
+                    print(error)
                 }
-            } else if let error = error {
-                print(error)
             }
         })
     }

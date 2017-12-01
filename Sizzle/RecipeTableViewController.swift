@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, VoiceRecognitionDelegate {
+class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, VoiceStatusDisplayDelegate, RecipeProgressViewDelegate {
     
     @IBOutlet var tableView: UITableView!
     @IBOutlet weak var speechRecognizerLabel: UILabel!
@@ -16,20 +16,25 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     var currentRecipe: Recipe!
     var voiceController = VoiceController()
     
+    
     // MARK: ACTION FUNCTIONS
     
     @IBAction func startTapped(_ sender: UIBarButtonItem) {
         // begin voice recognition
         voiceController.startRecordingSpeech()
+        // dissable button
     }
     
     // MARK: VIEW CONTROLLER
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Set various delegates
         tableView.delegate = self
         tableView.dataSource = self
-        voiceController.voiceHandler = self
+        voiceController.displayDelegate = self
+        voiceController.commandDelegate = currentRecipe
+        currentRecipe.dictateDelegate = voiceController
     }
 
     override func didReceiveMemoryWarning() {
@@ -37,17 +42,27 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         // Dispose of any resources that can be recreated.
     }
     
+    // MARK: RECIPE DELEGATE
+    func recipeStart() {
+        // disable button
+    }
+    
+    func recipeFinished() {
+        // display alert???
+        // enable start button
+    }
+    
+    func moveTo(step: Int) {
+        let indexPath = IndexPath(row: step, section: 0)
+        tableView.selectRow(at: indexPath, animated: true, scrollPosition: UITableViewScrollPosition.top)
+    }
+    
     // MARK: VOICE CONTROLLER DELEGATE
     func speechRecognized(text: String) {
-        if text.lowercased().contains("next") {
-            speechRecognizerLabel.text = "NEXT"
-            voiceController.restartRecordingSpeech()
-        } else {
-            speechRecognizerLabel.text = text
-        }
+        speechRecognizerLabel.text = text
     }
 
-    // MARK: TABLE VIEW
+    // MARK: TABLE VIEW DELEGATE
 
     func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
@@ -56,7 +71,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return currentRecipe.totalSteps
+        return currentRecipe.stepCount
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -65,15 +80,13 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         // Configure the cell...
-        cell.titleLabel.text = currentRecipe.steps[indexPath.row]
+        cell.titleLabel.text = currentRecipe.stepText(forViewAt: indexPath.row)
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let speechText = currentRecipe.steps[indexPath.row]
-        voiceController.speak(text: speechText)
-
+        currentRecipe.jumpTo(step: indexPath.row, sender: self)
     }
 
 }
