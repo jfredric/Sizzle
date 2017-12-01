@@ -82,6 +82,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
     
     // initilize and begin recording speech
     func startRecordingSpeech() {
+        print("Log [VoiceController]: Starting initial voice recognition.")
         if !checkSpeechPermissions() {
             return
         }
@@ -91,6 +92,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
     
     // set up engine and recognizer
     private func setupRecognition() {
+        print("Log [VoiceController]: Configuring voice recognition properties.")
         let node = audioEngine.inputNode //Note: medium guide wanted to guard this. But this is not optional...this is a singleton
         let recordingFormat = node.outputFormat(forBus: 0)
         node.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
@@ -111,7 +113,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
     
     // prepare and start recording
     private func startSpeechRecognitionTask() {
-        
+        print("Log [VoiceController]: Starting voice recognition session.")
         status = .recognizing
         
         // Call the recognizer
