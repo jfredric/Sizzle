@@ -83,10 +83,15 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
     // initilize and begin recording speech
     func startRecordingSpeech() {
         print("Log [VoiceController]: Attempting to initial voice recognition.")
-        checkSpeechPermissions() { authorized in
+        checkSpeechRecognitionPermissions() { authorized in
             if authorized {
-                self.setupRecognition()
-                self.startSpeechRecognitionTask()
+                self.checkMicrophonePermissions() { authorized in
+                    if authorized {
+                        self.setupRecognition()
+                        self.startSpeechRecognitionTask()
+                    }
+                }
+                
             }
         }
     }
@@ -146,7 +151,40 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
         })
     }
     
-    func checkSpeechPermissions(completion handler: @escaping (Bool)->Void) {
+    func checkMicrophonePermissions(completion handler: @escaping (Bool)->Void) {
+        var status = AVAudioSession.sharedInstance().recordPermission()
+        
+        switch status {
+        case .undetermined:
+            requestPermissionAlert(title: "Microphone", message: "Would you like to give the app permission to use the microphone in order to hear your voice commnds? Only while cooking)", from: nil, handler: { (confirmed) in
+                if confirmed {
+                    AVAudioSession.sharedInstance().requestRecordPermission() { (authorized) in
+                        if authorized {
+                            print("Log [VoiceController]: User authorized app to use the microphone")
+                            handler(true)
+                        } else {
+                            print("Warning [VoiceController]: User has denied microphone permissions")
+                            handler(false)
+                        }
+                        
+                    }
+                } else {
+                    handler(false)
+                }
+            })
+        case .denied:
+            let warningText = "Permissions for microphone usage were denied. Change permissions in setting to use the app's voice recognition features."
+            messageAlert(title: "Warning", message: warningText, from: nil)
+            print("Log [VoiceController]:", warningText)
+            handler(false)
+        case .granted:
+            print("Log [VoiceController]: Authorized for microphone use.")
+            handler(true)
+        }
+        //requestRecordPermission
+    }
+    
+    func checkSpeechRecognitionPermissions(completion handler: @escaping (Bool)->Void) {
         var status = SFSpeechRecognizer.authorizationStatus()
         
         switch status {
@@ -164,6 +202,8 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
                             handler(true)
                         }
                     }
+                } else {
+                    handler(false)
                 }
             })
         case .authorized:
