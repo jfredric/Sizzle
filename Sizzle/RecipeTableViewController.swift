@@ -12,6 +12,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     @IBOutlet var tableView: UITableView!
     @IBOutlet weak var speechRecognizerLabel: UILabel!
+    @IBOutlet weak var startButton: UIBarButtonItem!
     
     var currentRecipe: Recipe!
     var voiceController = VoiceController()
@@ -22,7 +23,8 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     @IBAction func startTapped(_ sender: UIBarButtonItem) {
         // begin voice recognition
         voiceController.startRecordingSpeech()
-        // dissable button
+        // disable button
+        startButton.isEnabled = false
     }
     
     // MARK: VIEW CONTROLLER
@@ -45,11 +47,13 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     // MARK: RECIPE DELEGATE
     func recipeStart() {
         // disable button
+        startButton.isEnabled = false
     }
     
     func recipeFinished() {
         // display alert???
         // enable start button
+        startButton.isEnabled = true
     }
     
     func moveTo(step: Int) {

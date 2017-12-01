@@ -163,6 +163,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="speechRecognizerLabel" destination="4e0-3o-BER" id="pXa-be-hak"/>
+                        <outlet property="startButton" destination="mfk-QB-xCS" id="h5h-Bu-mVM"/>
                         <outlet property="tableView" destination="dE3-gK-MOP" id="4Tf-xU-Xkh"/>
                     </connections>
                 </viewController>
