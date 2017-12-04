@@ -41,10 +41,21 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     // MARK: ACTION FUNCTIONS
     
     @IBAction func startTapped(_ sender: UIBarButtonItem) {
-        // begin voice recognition
-        voiceController.startRecordingSpeech()
-        // disable button
-        startButton.isEnabled = false
+        switch startButton.title ?? "nil" {
+        case "Start" :
+            // begin voice recognition
+            voiceController.startRecordingSpeech()
+            // Change button state
+            startButton.title = "Pause"
+        case "Pause" :
+            voiceController.pauseRecordingSpeech()
+            startButton.title = "Resume"
+        case "Resume" :
+            voiceController.resumeRecordingSpeech()
+            startButton.title = "Pause"
+        default :
+            print("Error [RecipeView]: Button not labeled correctly.")
+        }
     }
     
     // MARK: VIEW CONTROLLER
@@ -62,11 +73,17 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         currentRecipe.progressViewDelegate = self
         
         microphoneImageView.tintColor = microphoneDisabledColor
+        
+        navigationItem.title = currentRecipe.title
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    override func viewWillDisappear(_ animated : Bool) {
+        super.viewWillDisappear(animated)
+        
+        if self.isMovingFromParentViewController { // https://stackoverflow.com/questions/27713747/execute-action-when-back-bar-button-of-uinavigationcontroller-is-pressed/27715660#27715660
+            // stop any voice recognition
+            voiceController.stopRecordingSpeech()
+        }
     }
     
     // MARK: RECIPE DELEGATE

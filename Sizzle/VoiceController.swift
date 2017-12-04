@@ -139,15 +139,8 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     }
     
     func dictateFinished() {
-        recognitionTask?.cancel()
-        stopRecognition()
-//        if recognitionStatus != .disabled {
-//            updateRecognition(status: .paused)
-//        }
-        if microphoneStatus != .disabled {
-            updateMicrophone(status: .off)
-        }
         displayDelegate?.speechRecognized(text: "")
+        stopRecognition()
     }
     
     // MARK: SFSpeechRecognizerDelegate (optional)
@@ -199,6 +192,28 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
             }
         }
     }
+    func pauseRecordingSpeech() {
+        if audioEngine.isRunning {
+            audioEngine.pause()
+            recognitionTask?.finish()
+            updateMicrophone(status: .off)
+        }
+    }
+    func resumeRecordingSpeech() {
+        if !audioEngine.isRunning {
+            do {
+                try audioEngine.start()
+                updateMicrophone(status: .listening)
+            } catch { // exit on error
+                return print(error)
+            }
+            startSpeechRecognitionTask()
+            updateMicrophone(status: .listening)
+        }
+    }
+    func stopRecordingSpeech() {
+        stopRecognition()
+    }
     
     // set up engine and recognizer
     private func setupRecognition() {
@@ -224,8 +239,21 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     
     // release engine nad recognizer
     private func stopRecognition() {
+        print("Log [VoiceController]: Stopping voice recognition services.")
+        
+        // stop using the microphone
         audioEngine.stop()
         audioEngine.inputNode.removeTap(onBus: 0)
+        
+        // stop the recognition task if it is running
+        recognitionTask?.cancel()
+        
+        //        if recognitionStatus != .disabled {
+        //            updateRecognition(status: .paused)
+        //        }
+        if microphoneStatus != .disabled {
+            updateMicrophone(status: .off)
+        }
     }
     
     // start recording
