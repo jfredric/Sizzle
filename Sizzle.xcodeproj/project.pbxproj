@@ -96,6 +96,34 @@
 			name = Utilities;
 			sourceTree = "<group>";
 		};
+		EF91A0601FD5F3AB0038F498 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				EF2B6EFD1FCB6397001E361B /* Recipe.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		EF91A0611FD5F3B50038F498 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				EF2B6F011FCCC67D001E361B /* HomeTableViewController.swift */,
+				EF2B6F031FCCCAAC001E361B /* HomeTableViewCell.swift */,
+				EF2B6F051FCCD2E2001E361B /* RecipeTableViewController.swift */,
+				EF6934091FD083E600E803B0 /* VoiceController.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		EF91A0621FD5F3C60038F498 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				EFCEA2D31FBC26A3006CFE19 /* Main.storyboard */,
+				EFCEA2DB1FBC26A3006CFE19 /* LaunchScreen.storyboard */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		EFCEA2C31FBC26A3006CFE19 = {
 			isa = PBXGroup;
 			children = (
@@ -119,16 +147,12 @@
 		EFCEA2CE1FBC26A3006CFE19 /* Sizzle */ = {
 			isa = PBXGroup;
 			children = (
+				EF91A0621FD5F3C60038F498 /* Views */,
+				EF91A0611FD5F3B50038F498 /* Controllers */,
+				EF91A0601FD5F3AB0038F498 /* Model */,
 				EF6934061FCFAC4600E803B0 /* Utilities */,
 				EFCEA2CF1FBC26A3006CFE19 /* AppDelegate.swift */,
-				EF2B6EFD1FCB6397001E361B /* Recipe.swift */,
-				EFCEA2D31FBC26A3006CFE19 /* Main.storyboard */,
-				EF6934091FD083E600E803B0 /* VoiceController.swift */,
-				EF2B6F051FCCD2E2001E361B /* RecipeTableViewController.swift */,
-				EF2B6F011FCCC67D001E361B /* HomeTableViewController.swift */,
-				EF2B6F031FCCCAAC001E361B /* HomeTableViewCell.swift */,
 				EFCEA2D91FBC26A3006CFE19 /* Assets.xcassets */,
-				EFCEA2DB1FBC26A3006CFE19 /* LaunchScreen.storyboard */,
 				EFCEA2DE1FBC26A3006CFE19 /* Info.plist */,
 				EFCEA2D61FBC26A3006CFE19 /* Sizzle.xcdatamodeld */,
 			);
