@@ -11,19 +11,17 @@ import Speech
 
 protocol VoiceStatusDisplayDelegate {
     func speechRecognized(text: String)
+    func microphoneUpdate(status: VoiceController.MicrophoneStatus)
+    func recognitionUpdate(status: VoiceController.RecognitionStatus)
 }
 
 protocol VoiceCommandsDelegate {
     func executeNextCommand()
 }
 
-enum VoiceStatus {
-    case recognizing
-    case dictating
-    case idle
-}
-
-class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizerDelegate, RecipeDictateDelegate {
+class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognitionTaskDelegate, AVSpeechSynthesizerDelegate, RecipeDictateDelegate {
+    
+    //MARK: PROPERTIES
     
     // Text to Speech
     let speechSynthesizer = AVSpeechSynthesizer()
@@ -34,11 +32,36 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
     var request = SFSpeechAudioBufferRecognitionRequest()
     var recognitionTask: SFSpeechRecognitionTask?
     
-    // voice recognition delegates
+    // Voice Controller delegates
     var displayDelegate: VoiceStatusDisplayDelegate?
     var commandDelegate: VoiceCommandsDelegate?
     
-    var status: VoiceStatus = .idle
+    // Voice Controller Status Properties
+    //var voiceControllerStatus: VoicecControllerStatus = .idle
+    var microphoneStatus: MicrophoneStatus = .disabled
+    var recognitionStatus: RecognitionStatus = .disabled
+    var speakerStatus: SpeakerStatus = .idle
+    
+    // MARK: ENUMS & STRUCTURES
+    
+    enum SpeakerStatus {
+        case active
+        case idle
+        case disabled
+    }
+    
+    enum MicrophoneStatus {
+        case disabled
+        case listening
+        case off
+    }
+    
+    enum RecognitionStatus {
+        case disabled
+        case active
+        case success
+        case paused
+    }
     
     // MARK: INITIALIZER
     
@@ -50,6 +73,18 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
         speechRecognizer?.delegate = self
     }
     
+    // MARK: HELPER FUNCTIONS
+    
+    func updateMicrophone(status: MicrophoneStatus) {
+        microphoneStatus = status
+        displayDelegate?.microphoneUpdate(status: status)
+    }
+    
+    func updateRecognition(status: RecognitionStatus) {
+        recognitionStatus = status
+        displayDelegate?.recognitionUpdate(status: status)
+    }
+    
     // MARK: TEXT TO SPEECH
     
     func speak(text: String) {
@@ -57,15 +92,45 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
         speechSynthesizer.speak(speechUtterance)
     }
     
-    
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
-        request = SFSpeechAudioBufferRecognitionRequest()
-        startSpeechRecognitionTask()
-        displayDelegate?.speechRecognized(text: "")
-    }
+    // AVSpeechSynthesizerDelegate functions
     
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
+        print("DEBUG [speech]: did start")
+        
+        speakerStatus = .active
+        
+        // pause recognition
         recognitionTask?.finish()
+        if recognitionStatus != .disabled {
+            updateRecognition(status: .paused)
+        }
+        if microphoneStatus != .disabled {
+            updateMicrophone(status: .off)
+        }
+    }
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didPause utterance: AVSpeechUtterance) {
+        // code here
+        print("DEBUG [speech]: did pause")
+    }
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didContinue utterance: AVSpeechUtterance) {
+        // code here
+        print("DEBUG [speech]: did continue")
+    }
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, willSpeakRangeOfSpeechString characterRange: NSRange, utterance: AVSpeechUtterance) {
+        // code here
+        //print("DEBUG [speech]: will speak")
+    }
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+        // code here
+        print("DEBUG [speech]: did cancel")
+    }
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        print("DEBUG [speech]: did finish")
+        
+        speakerStatus = .idle
+        
+        // resume recognition
+        startSpeechRecognitionTask()
     }
     
     // MARK: RECIPE DICTATE DELEGATE
@@ -74,24 +139,63 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
     }
     
     func dictateFinished() {
-        recognitionTask?.finish()
+        recognitionTask?.cancel()
+        stopRecognition()
+        if recognitionStatus != .disabled {
+            updateRecognition(status: .paused)
+        }
+        if microphoneStatus != .disabled {
+            updateMicrophone(status: .off)
+        }
         displayDelegate?.speechRecognized(text: "")
     }
+    
+    // MARK: SFSpeechRecognizerDelegate (optional)
+    
+    func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
+        // CODE HERE
+        print("DEBUG [recognizer]: availability changed to", available)
+    }
+    
+    // MARK: SFSpeechRecognitionTaskDelegate (optional)
+    
+    /*** This is very very slow and not very useful
+    func speechRecognitionDidDetectSpeech(_ task: SFSpeechRecognitionTask) {
+        print("DEBUG [recog. task]: speech detected.")
+    }
+    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishRecognition recognitionResult: SFSpeechRecognitionResult) {
+        print("DEBUG [recog. task]: did finish with: ", recognitionResult.bestTranscription.formattedString)
+    }
+    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishSuccessfully successfully: Bool) {
+        print("DEBUG [recog. task]: did finish successfully (\(successfully))")
+    }
+    func speechRecognitionTaskFinishedReadingAudio(_ task: SFSpeechRecognitionTask) {
+        print("DEBUG [recog. task]: finished reading audio.")
+    }
+    func speechRecognitionTaskWasCancelled(_ task: SFSpeechRecognitionTask) {
+        print("DEBUG [recog. task]: recognition was cancelled.")
+    }
+     ***/
     
     // MARK: VOICE RECOGNITION
     
     // initilize and begin recording speech
     func startRecordingSpeech() {
-        print("Log [VoiceController]: Attempting to initial voice recognition.")
+        print("Log [VoiceController]: Attempting to initialize voice recognition.")
         checkSpeechRecognitionPermissions() { authorized in
             if authorized {
+                self.updateRecognition(status: .paused)
                 self.checkMicrophonePermissions() { authorized in
                     if authorized {
+                        self.updateMicrophone(status: .off)
                         self.setupRecognition()
                         self.startSpeechRecognitionTask()
+                    } else {
+                        self.updateMicrophone(status: .disabled)
                     }
                 }
-                
+            } else {
+                self.updateRecognition(status: .disabled)
             }
         }
     }
@@ -108,6 +212,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
         audioEngine.prepare()
         do {
             try audioEngine.start()
+            updateMicrophone(status: .listening)
         } catch { // exit on error
             return print(error)
         }
@@ -117,44 +222,59 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
         if !myRecognizer.isAvailable { return } // not available right now
     }
     
-    // prepare and start recording
+    // release engine nad recognizer
+    private func stopRecognition() {
+        audioEngine.stop()
+        audioEngine.inputNode.removeTap(onBus: 0)
+    }
+    
+    // start recording
     private func startSpeechRecognitionTask() {
         print("Log [VoiceController]: Starting voice recognition session.")
-        status = .recognizing
+        
+        //get a new recognitionRequest
+        request = SFSpeechAudioBufferRecognitionRequest()
+        
+        //voiceControllerStatus = .recognizing
+        if recognitionStatus != .disabled {
+            updateRecognition(status: .active)
+        }
+        if microphoneStatus != .disabled {
+            updateMicrophone(status: .listening)
+        }
         
         // Call the recognizer
+        //recognitionTask = speechRecognizer?.recognitionTask(with: request, delegate: self)
         recognitionTask = speechRecognizer?.recognitionTask(with: request, resultHandler: { (result, error) in
-            if self.status == VoiceStatus.recognizing {
+            if self.speakerStatus != .active { // safety fencing in case recognizer picks up speech synthesis
                 if let result = result {
                     let bestString = result.bestTranscription.formattedString
-                    // use the string
-                    
+
                     // update the display text
-                    if self.displayDelegate != nil {
-                        self.displayDelegate?.speechRecognized(text: bestString)
-                    } else {
-                        print("Warning [VoiceController]: No delegate set for voice input handling")
-                    }
-                    
+                    self.displayDelegate?.speechRecognized(text: bestString)
+
                     // check for commands
                     if bestString.lowercased().contains("next") {
-                        self.status = .dictating
+                        //self.voiceControllerStatus = .dictating
+                        self.speakerStatus = .active
                         self.recognitionTask?.finish()
                         self.displayDelegate?.speechRecognized(text: "NEXT")
                         self.commandDelegate?.executeNextCommand()
                     }
-                    
+
                 } else if let error = error {
                     print(error)
                 }
             }
         })
+        
     }
     
     func checkMicrophonePermissions(completion handler: @escaping (Bool)->Void) {
-        var status = AVAudioSession.sharedInstance().recordPermission()
+        let permissions
+            = AVAudioSession.sharedInstance().recordPermission()
         
-        switch status {
+        switch permissions {
         case .undetermined:
             requestPermissionAlert(title: "Microphone", message: "Would you like to give the app permission to use the microphone in order to hear your voice commnds? Only while cooking)", from: nil, handler: { (confirmed) in
                 if confirmed {
@@ -185,19 +305,19 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, AVSpeechSynthesizer
     }
     
     func checkSpeechRecognitionPermissions(completion handler: @escaping (Bool)->Void) {
-        var status = SFSpeechRecognizer.authorizationStatus()
+        var permissions = SFSpeechRecognizer.authorizationStatus()
         
-        switch status {
+        switch permissions {
         case .notDetermined:
             requestPermissionAlert(title: "Speech Recognition", message: "Would you like to let the app listen for voice commands? This will only happen while cooking.", from: nil, handler: { (confirmed) in
                 if confirmed {
                     SFSpeechRecognizer.requestAuthorization { (authorizationStatus) in
-                        status = authorizationStatus
-                        if status == .denied {
+                        permissions = authorizationStatus
+                        if permissions == .denied {
                             print("Warning [VoiceController]: User has denied speech recognition permissions")
                             handler(false)
                         }
-                        if status == .authorized {
+                        if permissions == .authorized {
                             print("Log [VoiceController]: User authorized app for voice recognition")
                             handler(true)
                         }

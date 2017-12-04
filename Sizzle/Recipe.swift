@@ -70,6 +70,7 @@ class Recipe: VoiceCommandsDelegate {
         } else if let current = _currentStep {
             if current + 1 == steps.count { // end of steps
                 _currentStep = nil
+                dictateDelegate?.dictate(stepText: "You are done, enjoy!")
                 dictateDelegate?.dictateFinished()
                 progressViewDelegate?.recipeFinished()
             } else { // going on to next step.
@@ -96,13 +97,42 @@ class Recipe: VoiceCommandsDelegate {
         let testSteps = [
             "Add 1 teaspoon of oil to pan",
             "Set heat to medium and wait for the pan to come to temperature",
-            "Crack egg, and drop gentlying into pan",
+            "Crack egg, and drop gently into pan",
             "Salt and pepper lightly",
-            "wait 1 1/2 minutes",
+            "wait 1.5 minutes",
             "Using spatula, flip the egg",
-            "wait an additional 1 1/2 minutes",
+            "wait an additional 1.5 minutes",
             "Remove fried egg to plate"]
     
         return Recipe(title: "Fried Eggs", steps: testSteps)
+    }
+    
+    static func short() -> Recipe {
+        let testSteps = [
+            "Do step 1",
+            "Do step 2",
+            "Do step 3"]
+        return Recipe(title: "Short Test", steps: testSteps)
+    }
+    
+    static func long() -> Recipe {
+        let testSteps = [
+            "Do step 1",
+            "Do step 2",
+            "Do step 3",
+            "Do step 4",
+            "Do step 5",
+            "Do step 6",
+            "Do step 7",
+            "Do step 8",
+            "Do step 9",
+            "Do step 10",
+            "Do step 11",
+            "Do step 12",
+            "Do step 13",
+            "Do step 14",
+            "Do step 15"]
+        
+        return Recipe(title: "Long Test", steps: testSteps)
     }
 }

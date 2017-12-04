@@ -10,7 +10,7 @@ import UIKit
 
 class HomeTableViewController: UITableViewController {
     
-    var recipeList: [Recipe] = [Recipe.testEggs()]
+    var recipeList: [Recipe] = [Recipe.testEggs(),Recipe.short(),Recipe.long()]
 
     override func viewDidLoad() {
         super.viewDidLoad()
