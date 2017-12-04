@@ -141,27 +141,9 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LHr-1G-fDE" userLabel="Status Icons Container">
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LHr-1G-fDE" userLabel="Status Icons Container">
                                 <rect key="frame" x="327" y="619" width="40" height="40"/>
                                 <subviews>
-                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="deR-c4-BCp" userLabel="Ring Status">
-                                        <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
-                                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                <integer key="value" value="20"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                    </view>
-                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bsV-Pe-u4G" userLabel="Ring Inner Mask">
-                                        <rect key="frame" x="3" y="3" width="34" height="34"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                <integer key="value" value="17"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
-                                    </view>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="microphone-outline" highlighted="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gUQ-L4-9af" userLabel="Microphone Image">
                                         <rect key="frame" x="5" y="5" width="30" height="30"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -169,20 +151,12 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="deR-c4-BCp" secondAttribute="trailing" id="4BT-Bt-zWl"/>
-                                    <constraint firstItem="bsV-Pe-u4G" firstAttribute="leading" secondItem="LHr-1G-fDE" secondAttribute="leading" constant="3" id="51v-C4-7cv"/>
-                                    <constraint firstItem="deR-c4-BCp" firstAttribute="top" secondItem="LHr-1G-fDE" secondAttribute="top" id="5Uw-pv-qoW"/>
                                     <constraint firstAttribute="bottom" secondItem="gUQ-L4-9af" secondAttribute="bottom" constant="5" id="9xD-8x-wys"/>
                                     <constraint firstAttribute="trailing" secondItem="gUQ-L4-9af" secondAttribute="trailing" constant="5" id="F10-EO-Uif"/>
                                     <constraint firstItem="gUQ-L4-9af" firstAttribute="top" secondItem="LHr-1G-fDE" secondAttribute="top" constant="5" id="KTO-we-EUB"/>
-                                    <constraint firstAttribute="trailing" secondItem="bsV-Pe-u4G" secondAttribute="trailing" constant="3" id="PP4-N9-27R"/>
-                                    <constraint firstAttribute="bottom" secondItem="bsV-Pe-u4G" secondAttribute="bottom" constant="3" id="T2X-wN-8XD"/>
                                     <constraint firstAttribute="width" constant="40" id="dc2-FN-qBk"/>
                                     <constraint firstItem="gUQ-L4-9af" firstAttribute="leading" secondItem="LHr-1G-fDE" secondAttribute="leading" constant="5" id="f54-Bc-44g"/>
-                                    <constraint firstAttribute="bottom" secondItem="deR-c4-BCp" secondAttribute="bottom" id="goh-I2-24I"/>
-                                    <constraint firstItem="deR-c4-BCp" firstAttribute="leading" secondItem="LHr-1G-fDE" secondAttribute="leading" id="nHu-eI-oRf"/>
                                     <constraint firstAttribute="height" constant="40" id="nmp-JF-ams"/>
-                                    <constraint firstItem="bsV-Pe-u4G" firstAttribute="top" secondItem="LHr-1G-fDE" secondAttribute="top" constant="3" id="qTC-l3-GuU"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -210,7 +184,6 @@
                     </navigationItem>
                     <connections>
                         <outlet property="microphoneImageView" destination="gUQ-L4-9af" id="7JE-So-z4E"/>
-                        <outlet property="recognizerRingStatusView" destination="deR-c4-BCp" id="P5C-8a-D1I"/>
                         <outlet property="speechRecognizerLabel" destination="4e0-3o-BER" id="pXa-be-hak"/>
                         <outlet property="startButton" destination="mfk-QB-xCS" id="h5h-Bu-mVM"/>
                         <outlet property="tableView" destination="dE3-gK-MOP" id="4Tf-xU-Xkh"/>

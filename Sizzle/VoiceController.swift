@@ -12,7 +12,7 @@ import Speech
 protocol VoiceStatusDisplayDelegate {
     func speechRecognized(text: String)
     func microphoneUpdate(status: VoiceController.MicrophoneStatus)
-    func recognitionUpdate(status: VoiceController.RecognitionStatus)
+    //func recognitionUpdate(status: VoiceController.RecognitionStatus)
 }
 
 protocol VoiceCommandsDelegate {
@@ -39,7 +39,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     // Voice Controller Status Properties
     //var voiceControllerStatus: VoicecControllerStatus = .idle
     var microphoneStatus: MicrophoneStatus = .disabled
-    var recognitionStatus: RecognitionStatus = .disabled
+    //var recognitionStatus: RecognitionStatus = .disabled
     var speakerStatus: SpeakerStatus = .idle
     
     // MARK: ENUMS & STRUCTURES
@@ -80,10 +80,10 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
         displayDelegate?.microphoneUpdate(status: status)
     }
     
-    func updateRecognition(status: RecognitionStatus) {
+    /*func updateRecognition(status: RecognitionStatus) {
         recognitionStatus = status
         displayDelegate?.recognitionUpdate(status: status)
-    }
+    }*/
     
     // MARK: TEXT TO SPEECH
     
@@ -101,9 +101,9 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
         
         // pause recognition
         recognitionTask?.finish()
-        if recognitionStatus != .disabled {
-            updateRecognition(status: .paused)
-        }
+//        if recognitionStatus != .disabled {
+//            updateRecognition(status: .paused)
+//        }
         if microphoneStatus != .disabled {
             updateMicrophone(status: .off)
         }
@@ -141,9 +141,9 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     func dictateFinished() {
         recognitionTask?.cancel()
         stopRecognition()
-        if recognitionStatus != .disabled {
-            updateRecognition(status: .paused)
-        }
+//        if recognitionStatus != .disabled {
+//            updateRecognition(status: .paused)
+//        }
         if microphoneStatus != .disabled {
             updateMicrophone(status: .off)
         }
@@ -182,11 +182,11 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     // initilize and begin recording speech
     func startRecordingSpeech() {
         print("Log [VoiceController]: Attempting to initialize voice recognition.")
-        checkSpeechRecognitionPermissions() { authorized in
-            if authorized {
-                self.updateRecognition(status: .paused)
-                self.checkMicrophonePermissions() { authorized in
-                    if authorized {
+        checkSpeechRecognitionPermissions() { speechAuthorized in
+            if speechAuthorized {
+//                self.updateRecognition(status: .paused)
+                self.checkMicrophonePermissions() { microphoneAuthorized in
+                    if microphoneAuthorized {
                         self.updateMicrophone(status: .off)
                         self.setupRecognition()
                         self.startSpeechRecognitionTask()
@@ -195,7 +195,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
                     }
                 }
             } else {
-                self.updateRecognition(status: .disabled)
+                self.updateMicrophone(status: .disabled)
             }
         }
     }
@@ -236,9 +236,9 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
         request = SFSpeechAudioBufferRecognitionRequest()
         
         //voiceControllerStatus = .recognizing
-        if recognitionStatus != .disabled {
-            updateRecognition(status: .active)
-        }
+//        if recognitionStatus != .disabled {
+//            updateRecognition(status: .active)
+//        }
         if microphoneStatus != .disabled {
             updateMicrophone(status: .listening)
         }

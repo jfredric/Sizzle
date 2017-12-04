@@ -31,12 +31,12 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     let microphoneDisabledColor = UIColor.gray
     
     // Recognizer Status Colors
-    struct RecognizerStatusColors {
+    /*struct RecognizerStatusColors {
         static let active = UIColor.blue
         static let disabled = UIColor.gray
         static let paused = UIColor.lightGray
         static let success = UIColor.green
-    }
+    }*/
     
     // MARK: ACTION FUNCTIONS
     
@@ -107,7 +107,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    func recognitionUpdate(status: VoiceController.RecognitionStatus) {
+    /*func recognitionUpdate(status: VoiceController.RecognitionStatus) {
         switch status {
         case .active:
             recognizerRingStatusView.backgroundColor = RecognizerStatusColors.active
@@ -118,7 +118,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         case .success:
             recognizerRingStatusView.backgroundColor = RecognizerStatusColors.success
         }
-    }
+    }*/
     
     // MARK: TABLE VIEW DELEGATE
 
