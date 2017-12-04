@@ -17,6 +17,9 @@ protocol VoiceStatusDisplayDelegate {
 
 protocol VoiceCommandsDelegate {
     func executeNextCommand()
+    func executePrevCommand()
+    func executeStopCommand()
+    func executeRepeatCommand()
 }
 
 class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognitionTaskDelegate, AVSpeechSynthesizerDelegate, RecipeDictateDelegate {
@@ -282,12 +285,34 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
                     self.displayDelegate?.speechRecognized(text: bestString)
 
                     // check for commands
+                    
                     if bestString.lowercased().contains("next") {
                         //self.voiceControllerStatus = .dictating
                         self.speakerStatus = .active
                         self.recognitionTask?.finish()
-                        self.displayDelegate?.speechRecognized(text: "NEXT")
+                        self.displayDelegate?.speechRecognized(text: "next")
                         self.commandDelegate?.executeNextCommand()
+                    }
+                    
+                    if bestString.lowercased().contains("previous") {
+                        self.speakerStatus = .active
+                        self.recognitionTask?.finish()
+                        self.displayDelegate?.speechRecognized(text: "previous")
+                        self.commandDelegate?.executePrevCommand()
+                    }
+                    
+                    if bestString.lowercased().contains("repeat") {
+                        self.speakerStatus = .active
+                        self.recognitionTask?.finish()
+                        self.displayDelegate?.speechRecognized(text: "repeat")
+                        self.commandDelegate?.executeRepeatCommand()
+                    }
+                    
+                    if bestString.lowercased().contains("stop cooking") {
+                        self.speakerStatus = .active
+                        self.stopRecognition()
+                        self.displayDelegate?.speechRecognized(text: "stop cooking")
+                        self.commandDelegate?.executeStopCommand()
                     }
 
                 } else if let error = error {

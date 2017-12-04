@@ -26,7 +26,8 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     // MARK: CONSTANTS
     
     // Microphone Status Colors
-    let microphoneActiveColor = UIColor.blue
+    let microphoneActiveColor = UIColor(red: 0.2353, green: 0.4863, blue: 0.7608, alpha: 1.0) // blue
+    // UIColor(red: 0.84, green: 0.84, blue: 0.84, alpha: 1.0) // same light level gray
     let microphoneIdleColor = UIColor.lightGray
     let microphoneDisabledColor = UIColor.gray
     
@@ -40,11 +41,13 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     
     // MARK: ACTION FUNCTIONS
     
+    // "Start" button, for start, pause and resume
     @IBAction func startTapped(_ sender: UIBarButtonItem) {
         switch startButton.title ?? "nil" {
         case "Start" :
             // begin voice recognition
             voiceController.startRecordingSpeech()
+            currentRecipe.next()
             // Change button state
             startButton.title = "Pause"
         case "Pause" :
@@ -83,20 +86,24 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         if self.isMovingFromParentViewController { // https://stackoverflow.com/questions/27713747/execute-action-when-back-bar-button-of-uinavigationcontroller-is-pressed/27715660#27715660
             // stop any voice recognition
             voiceController.stopRecordingSpeech()
+            // do I need to clean up the recipe? No it should be deallocated.
         }
     }
     
     // MARK: RECIPE DELEGATE
     func recipeStart() {
-        // disable button
-        startButton.isEnabled = false
+//        // disable button
+//        startButton.isEnabled = false
+        startButton.title = "Pause"
     }
     
     func recipeFinished() {
         // display alert???
+        
         // enable start button
         startButton.isEnabled = true
         tableView.selectRow(at: nil, animated: true, scrollPosition: UITableViewScrollPosition.top)
+        startButton.title = "Start"
     }
     
     func moveTo(step: Int) {

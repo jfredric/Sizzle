@@ -86,9 +86,50 @@ class Recipe: VoiceCommandsDelegate {
         
     }
     
+    func prev() {
+        if steps.count == 0 { // no steps in this recipe.
+            progressViewDelegate?.recipeFinished()
+        } else if let current = _currentStep {
+            if current - 1 < 0 { // already at the first step
+                _currentStep = 0
+                dictateDelegate?.dictate(stepText: "You're on the first step. Did you want me to repeat it?")
+            } else { // going on to previous step.
+                _currentStep = current - 1
+                dictateDelegate?.dictate(stepText: steps[_currentStep!])
+                progressViewDelegate?.moveTo(step: _currentStep!)
+            }
+        } else { // have not started yet, going to first step
+            _currentStep = 0
+            dictateDelegate?.dictate(stepText: steps[_currentStep!])
+            progressViewDelegate?.moveTo(step: _currentStep!)
+        }
+    }
+    
+    func stop() {
+        _currentStep = nil
+        dictateDelegate?.dictate(stepText: "Stopping cooking activity.")
+    }
+    
     // MARK: VOICE COMMANDS DELEGATE
     func executeNextCommand() {
         next()
+    }
+    
+    func executePrevCommand() {
+        prev()
+    }
+    
+    func executeStopCommand() {
+        stop()
+        progressViewDelegate?.recipeFinished()
+    }
+    
+    func executeRepeatCommand() {
+        if _currentStep != nil {
+            dictateDelegate?.dictate(stepText: steps[_currentStep!])
+        } else {
+            print("Error [Recipe]: The recipe has not started yet. Cannot repeat")
+        }
     }
     
     // test data
