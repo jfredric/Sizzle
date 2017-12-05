@@ -14,6 +14,7 @@ dsym_plist="$DWARF_DSYM_FOLDER_PATH/$DWARF_DSYM_FILE_NAME/Contents/Info.plist"
 
 for plist in "$target_plist" "$dsym_plist"; do
   if [ -f "$plist" ]; then
+    echo "Setting build version for $plist"
     /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $gitCommitCount.$gitCommitDecimal" "$plist"
     #/usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString ${git_release_version#*v}" "$plist"
   fi

@@ -23,7 +23,7 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This is needed in order to hear your voice commands. This only happens during a cooking task.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>This will allow the app to process your speech for voice commands. You can say things like &quot;next step&quot; to move onto the next step in a recipe. This only happens during a cooking task.</string>
+	<string>This will allow the app to process your speech for voice commands. You can say things like "next step" to move onto the next step in a recipe. This only happens during a cooking task.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

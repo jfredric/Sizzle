@@ -3,7 +3,7 @@
 //  Sizzle
 //
 //  Created by Joshua Fredrickson on 11/27/17.
-//  Copyright © 2017 Joshua Fredrickson. All rights reserved.
+//  Copyright © 2017 Joshua Fredrickson. All rights reserved.HomeTableViewCell
 //
 
 import UIKit
@@ -17,7 +17,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var speechRecognizerLabel: UILabel!
     @IBOutlet weak var startButton: UIBarButtonItem!
     @IBOutlet weak var microphoneImageView: UIImageView!
-    @IBOutlet weak var recognizerRingStatusView: UIView!
+    //@IBOutlet weak var recognizerRingStatusView: UIView!
     
     var currentRecipe: Recipe!
     
@@ -65,6 +65,10 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // dynamic cell properties
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 140
+        
         // Set various delegates
         tableView.delegate = self
         tableView.dataSource = self
@@ -157,12 +161,12 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = (tableView.dequeueReusableCell(withIdentifier: "RecipeTableViewCell-ID", for: indexPath) as? HomeTableViewCell) else {
-            fatalError("Error [Recipe]: Could not cast cell as HomeTableViewCell")
+        guard let cell = (tableView.dequeueReusableCell(withIdentifier: "StepTableViewCell-ID", for: indexPath) as? RecipeStepTableViewCell) else {
+            fatalError("Error [Recipe Steps]: Could not cast cell as RecipeStepTableViewCell")
         }
         
         // Configure the cell...
-        cell.titleLabel.text = currentRecipe.stepText(forViewAt: indexPath.row)
+        cell.instructionsLabel.text = currentRecipe.stepText(forViewAt: indexPath.row)
         
         return cell
     }

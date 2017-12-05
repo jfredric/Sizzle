@@ -16,10 +16,11 @@ protocol VoiceStatusDisplayDelegate {
 }
 
 protocol VoiceCommandsDelegate {
-    func executeNextCommand()
-    func executePrevCommand()
-    func executeStopCommand()
-    func executeRepeatCommand()
+    func executeCommandNext()
+    func executeCommandPrev()
+    func executeCommandStop()
+    func executeCommandRepeat()
+    func executeCommandListIngredients()
 }
 
 class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognitionTaskDelegate, AVSpeechSynthesizerDelegate, RecipeDictateDelegate {
@@ -291,28 +292,27 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
                         self.speakerStatus = .active
                         self.recognitionTask?.finish()
                         self.displayDelegate?.speechRecognized(text: "next")
-                        self.commandDelegate?.executeNextCommand()
-                    }
-                    
-                    if bestString.lowercased().contains("previous") {
+                        self.commandDelegate?.executeCommandNext()
+                    } else if bestString.lowercased().contains("previous") {
                         self.speakerStatus = .active
                         self.recognitionTask?.finish()
                         self.displayDelegate?.speechRecognized(text: "previous")
-                        self.commandDelegate?.executePrevCommand()
-                    }
-                    
-                    if bestString.lowercased().contains("repeat") {
+                        self.commandDelegate?.executeCommandPrev()
+                    } else if bestString.lowercased().contains("repeat") {
                         self.speakerStatus = .active
                         self.recognitionTask?.finish()
                         self.displayDelegate?.speechRecognized(text: "repeat")
-                        self.commandDelegate?.executeRepeatCommand()
-                    }
-                    
-                    if bestString.lowercased().contains("stop cooking") {
+                        self.commandDelegate?.executeCommandRepeat()
+                    } else if bestString.lowercased().contains("stop cooking") {
                         self.speakerStatus = .active
                         self.stopRecognition()
                         self.displayDelegate?.speechRecognized(text: "stop cooking")
-                        self.commandDelegate?.executeStopCommand()
+                        self.commandDelegate?.executeCommandStop()
+                    } else if bestString.lowercased().contains("list ingredients") {
+                        self.speakerStatus = .active
+                        self.recognitionTask?.finish()
+                        self.displayDelegate?.speechRecognized(text: "list ingredients")
+                        self.commandDelegate?.executeCommandListIngredients()
                     }
 
                 } else if let error = error {

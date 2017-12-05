@@ -15,7 +15,7 @@
         <scene sceneID="fW5-T0-iIW">
             <objects>
                 <tableViewController id="Vac-fk-icu" userLabel="Home Table View Controller" customClass="HomeTableViewController" customModule="Sizzle" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="hJ5-aK-2TG">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="84" sectionHeaderHeight="28" sectionFooterHeight="28" id="hJ5-aK-2TG">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -24,12 +24,12 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="3eW-63-pZr" id="cxL-L1-0iw">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="72f-2C-gLj" userLabel="Title">
                                             <rect key="frame" x="16" y="11" width="343" height="22"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
@@ -52,7 +52,7 @@
                             <outlet property="delegate" destination="Vac-fk-icu" id="qpT-i9-tLa"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="yZ4-Og-isw"/>
+                    <navigationItem key="navigationItem" title="Recipe List" id="yZ4-Og-isw"/>
                     <connections>
                         <segue destination="Dfa-1n-TBq" kind="show" identifier="listToRecipeSegue-ID" id="vMA-tx-Mxr"/>
                     </connections>
@@ -91,14 +91,14 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="611"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="RecipeTableViewCell-ID" id="Gdj-JD-Oc0" userLabel="Home Table View Cell" customClass="HomeTableViewCell" customModule="Sizzle" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="StepTableViewCell-ID" id="ytP-0y-ejx" userLabel="Step Table View Cell" customClass="RecipeStepTableViewCell" customModule="Sizzle" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Gdj-JD-Oc0" id="IYW-Z1-mpl">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ytP-0y-ejx" id="g7w-ZX-klp">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uxl-nM-aZn" userLabel="Title">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CJs-8c-dt2" userLabel="Instructions">
                                                     <rect key="frame" x="15" y="11" width="345" height="22"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                                     <nil key="textColor"/>
@@ -106,14 +106,14 @@
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="Uxl-nM-aZn" firstAttribute="leading" secondItem="IYW-Z1-mpl" secondAttribute="leadingMargin" id="CUu-zx-94T"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="Uxl-nM-aZn" secondAttribute="trailing" id="eFL-Ug-dq2"/>
-                                                <constraint firstItem="Uxl-nM-aZn" firstAttribute="top" secondItem="IYW-Z1-mpl" secondAttribute="topMargin" id="fJW-Yt-Vhw"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="Uxl-nM-aZn" secondAttribute="bottom" id="mnq-02-h0K"/>
+                                                <constraint firstItem="CJs-8c-dt2" firstAttribute="top" secondItem="g7w-ZX-klp" secondAttribute="topMargin" id="5zS-Nz-uL3"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="CJs-8c-dt2" secondAttribute="trailing" id="A0j-4n-rml"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="CJs-8c-dt2" secondAttribute="bottom" id="Fr0-nO-V9H"/>
+                                                <constraint firstItem="CJs-8c-dt2" firstAttribute="leading" secondItem="g7w-ZX-klp" secondAttribute="leadingMargin" id="Mix-d3-8ar"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="titleLabel" destination="Uxl-nM-aZn" id="GKw-gK-dtR"/>
+                                            <outlet property="instructionsLabel" destination="CJs-8c-dt2" id="ypC-vH-TXc"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
