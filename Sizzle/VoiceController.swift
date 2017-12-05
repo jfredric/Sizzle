@@ -43,7 +43,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     // Voice Controller Status Properties
     //var voiceControllerStatus: VoicecControllerStatus = .idle
     var microphoneStatus: MicrophoneStatus = .disabled
-    //var recognitionStatus: RecognitionStatus = .disabled
+    var recognitionStatus: RecognitionStatus = .disabled
     var speakerStatus: SpeakerStatus = .idle
     
     // MARK: ENUMS & STRUCTURES
@@ -63,8 +63,8 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     enum RecognitionStatus {
         case disabled
         case active
-        case success
-        case paused
+        case success // not currently used, may not need
+        case inactive
     }
     
     // MARK: INITIALIZER
@@ -100,33 +100,16 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didStart utterance: AVSpeechUtterance) {
         print("DEBUG [speech]: did start")
-        
         speakerStatus = .active
         
-        // pause recognition
-        recognitionTask?.finish()
-//        if recognitionStatus != .disabled {
-//            updateRecognition(status: .paused)
-//        }
-        if microphoneStatus != .disabled {
-            updateMicrophone(status: .off)
+        // pause recognition if running
+        if recognitionStatus == .active {
+            pauseRecognitionTask()
         }
-    }
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didPause utterance: AVSpeechUtterance) {
-        // code here
-        print("DEBUG [speech]: did pause")
-    }
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didContinue utterance: AVSpeechUtterance) {
-        // code here
-        print("DEBUG [speech]: did continue")
     }
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, willSpeakRangeOfSpeechString characterRange: NSRange, utterance: AVSpeechUtterance) {
         // code here
         //print("DEBUG [speech]: will speak")
-    }
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
-        // code here
-        print("DEBUG [speech]: did cancel")
     }
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         print("DEBUG [speech]: did finish")
@@ -134,17 +117,19 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
         speakerStatus = .idle
         
         // resume recognition
-        startSpeechRecognitionTask()
+        // need a check for if it is paused while speaking?f
+        resumeRecognitionTask()
     }
     
     // MARK: RECIPE DICTATE DELEGATE
     func dictate(stepText: String) {
+        // check recognizer state
         speak(text: stepText)
     }
     
     func dictateFinished() {
         displayDelegate?.speechRecognized(text: "")
-        stopRecognition()
+        stopRecognitionTask()
     }
     
     // MARK: SFSpeechRecognizerDelegate (optional)
@@ -176,6 +161,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     
     // MARK: VOICE RECOGNITION
     
+    // external controls
     // initilize and begin recording speech
     func startRecordingSpeech() {
         print("Log [VoiceController]: Attempting to initialize voice recognition.")
@@ -185,8 +171,8 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
                 self.checkMicrophonePermissions() { microphoneAuthorized in
                     if microphoneAuthorized {
                         self.updateMicrophone(status: .off)
-                        self.setupRecognition()
-                        self.startSpeechRecognitionTask()
+                        self.setupRecognizerEngine()
+                        self.startRecognitionTask()
                     } else {
                         self.updateMicrophone(status: .disabled)
                     }
@@ -196,132 +182,179 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
             }
         }
     }
+    
     func pauseRecordingSpeech() {
+        if speakerStatus == .active {
+            speechSynthesizer.pauseSpeaking(at: .word)
+        }
         if audioEngine.isRunning {
-            audioEngine.pause()
-            recognitionTask?.finish()
-            updateMicrophone(status: .off)
+            pauseRecognitionTask()
         }
     }
+    
     func resumeRecordingSpeech() {
+        if speakerStatus == .active {
+            speechSynthesizer.continueSpeaking()
+        }
         if !audioEngine.isRunning {
-            do {
-                try audioEngine.start()
-                updateMicrophone(status: .listening)
-            } catch { // exit on error
-                return print(error)
-            }
-            startSpeechRecognitionTask()
-            updateMicrophone(status: .listening)
+            resumeRecognitionTask()
         }
     }
     func stopRecordingSpeech() {
-        stopRecognition()
+        stopRecognitionTask()
     }
     
+    // internal state functions
     // set up engine and recognizer
-    private func setupRecognition() {
+    private func setupRecognizerEngine() {
         print("Log [VoiceController]: Configuring voice recognition properties.")
+        
+        print("DEBUG [audioEngine]: setup node and tap")
         let node = audioEngine.inputNode //Note: medium guide wanted to guard this. But this is not optional...this is a singleton
         let recordingFormat = node.outputFormat(forBus: 0)
+        //let recordingFormat = AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 1)
         node.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { buffer, _ in
             self.request.append(buffer)
         }
         
+        print("DEBUG [audioEngine]: prepare")
         audioEngine.prepare()
-        do {
-            try audioEngine.start()
-            updateMicrophone(status: .listening)
-        } catch { // exit on error
-            return print(error)
-        }
+        startAudioEngine()
         
         // status checks
         guard let myRecognizer = SFSpeechRecognizer() else { return } // recognizer is not supported for locale
         if !myRecognizer.isAvailable { return } // not available right now
     }
     
-    // release engine nad recognizer
-    private func stopRecognition() {
-        print("Log [VoiceController]: Stopping voice recognition services.")
-        
-        // stop using the microphone
-        audioEngine.stop()
-        audioEngine.inputNode.removeTap(onBus: 0)
-        
-        // stop the recognition task if it is running
-        recognitionTask?.cancel()
-        
-        //        if recognitionStatus != .disabled {
-        //            updateRecognition(status: .paused)
-        //        }
-        if microphoneStatus != .disabled {
-            updateMicrophone(status: .off)
-        }
-    }
-    
     // start recording
-    private func startSpeechRecognitionTask() {
+    private func startRecognitionTask() {
         print("Log [VoiceController]: Starting voice recognition session.")
         
-        //get a new recognitionRequest
-        request = SFSpeechAudioBufferRecognitionRequest()
+        // make sure the results text field is empty
+        //displayDelegate?.speechRecognized(text: "")
+        print("DEBUG [recognitionTask]: start")
+        recognitionStatus = .active
+        setupRecognitionTask()
         
-        //voiceControllerStatus = .recognizing
-//        if recognitionStatus != .disabled {
-//            updateRecognition(status: .active)
-//        }
-        if microphoneStatus != .disabled {
-            updateMicrophone(status: .listening)
-        }
+    }
+    
+    private func resumeRecognitionTask() {
+        startAudioEngine()
         
-        // Call the recognizer
-        //recognitionTask = speechRecognizer?.recognitionTask(with: request, delegate: self)
+        // resume recognitionTask
+        print("DEBUG [recognitionTask]: resume")
+        recognitionStatus = .active
+        setupRecognitionTask()
+    }
+    
+    private func setupRecognitionTask() {
+        // get a new recognitionRequest
+        print("DEBUG [recognitionTask]: new request")
+        request = SFSpeechAudioBufferRecognitionRequest() // was complaining about something. Double check
+        
+        // set up the recognizer
+        print("DEBUG [recognitionTask]: new task")
         recognitionTask = speechRecognizer?.recognitionTask(with: request, resultHandler: { (result, error) in
             if self.speakerStatus != .active { // safety fencing in case recognizer picks up speech synthesis
                 if let result = result {
                     let bestString = result.bestTranscription.formattedString
-
-                    // update the display text
-                    self.displayDelegate?.speechRecognized(text: bestString)
-
-                    // check for commands
                     
-                    if bestString.lowercased().contains("next") {
-                        //self.voiceControllerStatus = .dictating
-                        self.speakerStatus = .active
-                        self.recognitionTask?.finish()
-                        self.displayDelegate?.speechRecognized(text: "next")
-                        self.commandDelegate?.executeCommandNext()
-                    } else if bestString.lowercased().contains("previous") {
-                        self.speakerStatus = .active
-                        self.recognitionTask?.finish()
-                        self.displayDelegate?.speechRecognized(text: "previous")
-                        self.commandDelegate?.executeCommandPrev()
-                    } else if bestString.lowercased().contains("repeat") {
-                        self.speakerStatus = .active
-                        self.recognitionTask?.finish()
-                        self.displayDelegate?.speechRecognized(text: "repeat")
-                        self.commandDelegate?.executeCommandRepeat()
-                    } else if bestString.lowercased().contains("stop cooking") {
-                        self.speakerStatus = .active
-                        self.stopRecognition()
-                        self.displayDelegate?.speechRecognized(text: "stop cooking")
-                        self.commandDelegate?.executeCommandStop()
-                    } else if bestString.lowercased().contains("list ingredients") {
-                        self.speakerStatus = .active
-                        self.recognitionTask?.finish()
-                        self.displayDelegate?.speechRecognized(text: "list ingredients")
-                        self.commandDelegate?.executeCommandListIngredients()
+                    // update the display text as its processed
+                    self.displayDelegate?.speechRecognized(text: bestString)
+                    
+                    // check for commands
+                    self.checkForCommands(result: bestString)
+                } else {
+                    // handle failures here
+                    print("Error [recognitionTask]: results failed.")
+                    if let error = error {
+                        print(error)
                     }
-
-                } else if let error = error {
-                    print(error)
                 }
             }
         })
-        
     }
+    
+    // release engine nad recognizer
+    private func stopRecognitionTask() {
+        print("Log [VoiceController]: Stopping voice recognition services.")
+        recognitionStatus = .inactive
+        // stop the recognition task if it is running
+        print("DEBUG [recognitionTask]: stop")
+        recognitionTask?.cancel()
+        recognitionTask = nil
+        
+        // stop using the microphone
+        print("DEBUG [audioEngine]: stop")
+        updateMicrophone(status: .off)
+        request.endAudio() // Added line to mark end of recording
+        audioEngine.stop()
+        print("DEBUG [audioEngine]: remove tap")
+        audioEngine.inputNode.removeTap(onBus: 0)
+    }
+    
+    private func pauseRecognitionTask() {
+        
+        print("DEBUG [recognitionTask]: cancel")
+        recognitionStatus = .inactive
+        recognitionTask?.cancel() // better than finish???
+        recognitionTask = nil
+        
+        print("DEBUG [audioEngine]: pause")
+        updateMicrophone(status: .off)
+        audioEngine.pause()
+    }
+    
+    // audio engine start helper function
+    private func startAudioEngine() {
+        print("DEBUG [audioEngine]: start")
+        do {
+            try audioEngine.start()
+            updateMicrophone(status: .listening)
+        } catch { // exit on error
+            print("Error [audioEngine]: could not start")
+            return print(error)
+        }
+    }
+    
+    // MARK: COMMANDS helper funciton
+    
+    private func checkForCommands(result: String) {
+        let result = result.lowercased()
+        if result.contains("next") {
+            pauseRecognitionTask()
+            
+            speakerStatus = .active
+            displayDelegate?.speechRecognized(text: "next")
+            commandDelegate?.executeCommandNext()
+        } else if result.contains("previous") {
+            pauseRecognitionTask()
+            
+            speakerStatus = .active
+            displayDelegate?.speechRecognized(text: "previous")
+            commandDelegate?.executeCommandPrev()
+        } else if result.contains("repeat") {
+            pauseRecognitionTask()
+            
+            speakerStatus = .active
+            displayDelegate?.speechRecognized(text: "repeat")
+            commandDelegate?.executeCommandRepeat()
+        } else if result.contains("stop cooking") {
+            pauseRecognitionTask()
+            
+            speakerStatus = .active
+            displayDelegate?.speechRecognized(text: "stop cooking")
+            commandDelegate?.executeCommandStop()
+        } else if result.contains("list ingredients") {
+            pauseRecognitionTask()
+            
+            speakerStatus = .active
+            displayDelegate?.speechRecognized(text: "list ingredients")
+            commandDelegate?.executeCommandListIngredients()
+        }
+    }
+    
+    // MARK: PERMISSIONS CHECK FUNCTIONS
     
     func checkMicrophonePermissions(completion handler: @escaping (Bool)->Void) {
         let permissions
