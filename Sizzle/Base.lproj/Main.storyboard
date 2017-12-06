@@ -177,6 +177,7 @@
                         <viewLayoutGuide key="safeArea" id="69T-5i-tPb"/>
                     </view>
                     <navigationItem key="navigationItem" title="Recipe Name" id="TKq-y2-K9a">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="O2e-jj-Eq0"/>
                         <barButtonItem key="rightBarButtonItem" title="Start" id="mfk-QB-xCS" userLabel="Start">
                             <connections>
                                 <action selector="startTapped:" destination="Dfa-1n-TBq" id="R7e-cY-uLz"/>

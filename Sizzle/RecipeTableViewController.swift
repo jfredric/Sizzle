@@ -38,7 +38,6 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     @IBAction func startTapped(_ sender: UIBarButtonItem) {
         switch startButton.title ?? "nil" {
         case "Start" :
-            voiceController.speak(text: "Let's start cooking. First gather your ingredients. When you are ready say...start cooking.")
             // begin voice recognition
             voiceController.startRecordingSpeech()
             

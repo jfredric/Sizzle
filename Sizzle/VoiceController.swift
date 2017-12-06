@@ -176,6 +176,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
                 self.checkMicrophonePermissions() { microphoneAuthorized in
                     if microphoneAuthorized {
                         self.microphoneStatus = .off
+                        self.speak(text: "Let's start cooking. First gather your ingredients. When you are ready say...start cooking.")
                         self.setupRecognizerEngine()
                         self.startRecognitionTask()
                     } else {
