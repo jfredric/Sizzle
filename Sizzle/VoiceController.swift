@@ -37,6 +37,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     let speechRecognizer: SFSpeechRecognizer? = SFSpeechRecognizer()
     var request = SFSpeechAudioBufferRecognitionRequest()
     var recognitionTask: SFSpeechRecognitionTask?
+    var timeOut: Timer?
     
     // Voice Controller delegates
     var displayDelegate: VoiceStatusDisplayDelegate?
@@ -46,6 +47,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     private var _micStatus: MicrophoneStatus = .disabled
     private var _recStatus: RecognitionStatus = .disabled
     private var _speakStatus: SpeakerStatus = .idle
+    
     
     private var microphoneStatus: MicrophoneStatus {
         get { return _micStatus }
@@ -281,7 +283,16 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
                         print(error)
                     }
                 } else if let result = result {
-                    
+                    // first time result is recieved from a task we need to set a delayed task to restart it, because the 1 minute timeout will not inform us it has killed the task.
+                    if self.timeOut == nil {
+                        print("DEBUG [recognitionTask]: timeOut set")
+                        self.timeOut = Timer.scheduledTimer(withTimeInterval: 60, repeats: false, block: { (timer) in
+                            print("DEBUG [recognitionTask]: timeOut triggered")
+                            self.pauseRecognitionTask()
+                            self.resumeRecognitionTask()
+                            self.timeOut = nil
+                        })
+                    }
                     
                     // get result
                     let bestString = result.bestTranscription.formattedString
@@ -320,6 +331,10 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
         print("DEBUG [recognitionTask]: stop")
         recognitionTask?.cancel()
         recognitionTask = nil
+        if let timer = timeOut {
+            timer.invalidate()
+            timeOut = nil
+        }
     }
     
     private func pauseRecognitionTask() {
@@ -327,6 +342,10 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
         recognitionStatus = .inactive
         recognitionTask?.cancel() // using finish results in an error code 1, which is the same for timeout
         recognitionTask = nil
+        if let timer = timeOut {
+            timer.invalidate()
+            timeOut = nil
+        }
         
         print("DEBUG [audioEngine]: pause")
         microphoneStatus = .off
