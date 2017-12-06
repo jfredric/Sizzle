@@ -98,24 +98,16 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
         // set speech delegates
         speechSynthesizer.delegate = self
         speechRecognizer?.delegate = self
+        
     }
-    
-    // MARK: HELPER FUNCTIONS
-    
-    /* replaced with getters and setters
-        func updateMicrophone(status: MicrophoneStatus) {
-        microphoneStatus = status
-        displayDelegate?.microphoneUpdate(status: status)
-    }*/
-    
-    /*func updateRecognition(status: RecognitionStatus) {
-        recognitionStatus = status
-        displayDelegate?.recognitionUpdate(status: status)
-    }*/
     
     // MARK: TEXT TO SPEECH
     
     func speak(text: String) {
+        // Fix for audio on normal phone speaker: https://stackoverflow.com/questions/36421802/using-the-iphone-speakers-with-avspeechsynthesizer
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, with: AVAudioSessionCategoryOptions.defaultToSpeaker)
+        } catch { print(error) }
         let speechUtterance = AVSpeechUtterance(string: text)
         speechSynthesizer.speak(speechUtterance)
     }
