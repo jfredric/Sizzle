@@ -38,9 +38,12 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     @IBAction func startTapped(_ sender: UIBarButtonItem) {
         switch startButton.title ?? "nil" {
         case "Start" :
+            voiceController.speak(text: "Let's start cooking. First gather your ingredients. When you are ready say...start cooking.")
             // begin voice recognition
             voiceController.startRecordingSpeech()
-            currentRecipe.next()
+            
+            // currentRecipe.next()
+            
             // Change button state
             startButton.title = "Pause"
         case "Pause" :
@@ -104,7 +107,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func moveTo(step: Int) {
-        let indexPath = IndexPath(row: step, section: 0)
+        let indexPath = IndexPath(row: step, section: 1)
         tableView.selectRow(at: indexPath, animated: true, scrollPosition: UITableViewScrollPosition.top)
     }
     
@@ -165,12 +168,24 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
 
     func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 1
+        return 2
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return currentRecipe.stepCount
+        if section == 0 {
+            return 1
+        } else {
+            return currentRecipe.stepCount
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return "Ingredients"
+        } else {
+            return "Instructions"
+        }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -179,7 +194,11 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         // Configure the cell...
-        cell.instructionsLabel.text = currentRecipe.stepText(forViewAt: indexPath.row)
+        if indexPath.section == 0 {
+            cell.instructionsLabel.text = currentRecipe.ingredientsListAsTextBlock()
+        } else {
+            cell.instructionsLabel.text = currentRecipe.stepText(forViewAt: indexPath.row)
+        }
         
         return cell
     }

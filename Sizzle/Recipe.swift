@@ -27,7 +27,7 @@ class Recipe: VoiceCommandsDelegate {
     private var _currentStep: Int?
     public var   currentStep: Int? { return _currentStep}
     private var steps: [String]
-    public var stepCount: Int { return steps.count + 1 }
+    public var stepCount: Int { return steps.count}
     private var ingredients: [Ingredient]
     
     
@@ -40,17 +40,13 @@ class Recipe: VoiceCommandsDelegate {
         self.steps = steps
     }
     
-    func stepText(forSpeechAt index: Int) -> String {
-        print("Warning [Recipe]: the stepText(forSpeechAt) function is depricated")
-        return steps[index - 1]
-    }
+//    func stepText(forSpeechAt index: Int) -> String {
+//        print("Warning [Recipe]: the stepText(forSpeechAt) function is depricated")
+//        return steps[index - 1]
+//    }
     
     func stepText(forViewAt index: Int) -> String {
-        if index == 0 {
-            return ingredientsListAsTextBlock()
-        } else {
-            return steps[index - 1]
-        }
+        return steps[index]
     }
     
     func ingredientsListAsTextBlock() -> String {
@@ -65,7 +61,7 @@ class Recipe: VoiceCommandsDelegate {
     }
     
     func jumpTo(step index: Int, sender: Any) {
-        if index > steps.count {
+        if index >= steps.count {
             return
         }
         
@@ -76,32 +72,29 @@ class Recipe: VoiceCommandsDelegate {
         }
         
         if !(send is RecipeDictateDelegate) {
-            if index == 0 {
-                // read ingedients ???
-            } else {
-                dictateDelegate?.dictate(stepText: steps[index - 1])
-            }
+            dictateDelegate?.dictate(stepText: steps[index])
         }
     }
     
     // Returns nil if no more steps exist
     func next() {
         if steps.count == 0 { // no steps in this recipe.
-                progressViewDelegate?.recipeFinished()
+            progressViewDelegate?.recipeFinished()
+            // dictateDelegate?.dictateFinished() // this might be needed
         } else if let current = _currentStep {
-            if current == steps.count { // end of steps (count + 1) - ingredients
+            if current == steps.count - 1 {
                 _currentStep = nil
-                dictateDelegate?.dictate(stepText: "Your meal is complete, enjoy!")
+                dictateDelegate?.dictate(stepText: "Your meal is ready to serve and enjoy!")
                 dictateDelegate?.dictateFinished()
                 progressViewDelegate?.recipeFinished()
             } else { // going on to next step.
                 _currentStep = current + 1
-                dictateDelegate?.dictate(stepText: steps[_currentStep! - 1])
+                dictateDelegate?.dictate(stepText: steps[_currentStep!])
                 progressViewDelegate?.moveTo(step: _currentStep!)
             }
         } else { // have not started yet, going to first step
             _currentStep = 0
-            dictateDelegate?.dictate(stepText: "Gather your ingredients, and and say...next step...to hear the first cooking instructions.")
+            dictateDelegate?.dictate(stepText: steps[0])
             progressViewDelegate?.moveTo(step: 0)
         }
         
@@ -110,20 +103,31 @@ class Recipe: VoiceCommandsDelegate {
     func prev() {
         if steps.count == 0 { // no steps in this recipe.
             progressViewDelegate?.recipeFinished()
+            // dictateDelegate?.dictateFinished() // this might be needed
         } else if let current = _currentStep {
-            if _currentStep == 0 { // ingredients step
-                dictateDelegate?.dictate(stepText: "You haven't started cooking yet. Say...list ingredients...if you would like to hear them all.")
-            } else if _currentStep == 1 { // already at the first step
-                dictateDelegate?.dictate(stepText: "You are currently on the first step. Say...repeat...if you would like to hear it again.")
+            if _currentStep == nil { // ingredients step
+                
+            } else if _currentStep == 0 { // already at the first step
+                dictateDelegate?.dictate(stepText: "You are currently on the first step. If you would like to hear it again you can say...repeat step...")
             } else {
                 _currentStep = current - 1
-                dictateDelegate?.dictate(stepText: steps[_currentStep! - 1])
+                dictateDelegate?.dictate(stepText: steps[_currentStep!])
                 progressViewDelegate?.moveTo(step: _currentStep!)
             }
         } else { // have not started yet, going to first step
+            dictateDelegate?.dictate(stepText: "If you are ready to start cooking then you can say...start cooking.")
+            //_currentStep = 0
+            //progressViewDelegate?.moveTo(step: _currentStep!)
+        }
+    }
+    
+    func start() {
+        if let current = _currentStep {
+            dictateDelegate?.dictate(stepText: "We are already cooking. If you meant to stop cooking then please try again.")
+        } else {
             _currentStep = 0
-            // dictage: read ingredients???
-            progressViewDelegate?.moveTo(step: _currentStep!)
+            dictateDelegate?.dictate(stepText: steps[0])
+            progressViewDelegate?.moveTo(step: 0)
         }
     }
     
@@ -133,6 +137,9 @@ class Recipe: VoiceCommandsDelegate {
     }
     
     // MARK: VOICE COMMANDS DELEGATE
+    func executeCommandStart() {
+        start()
+    }
     
     func executeCommandNext() {
         next()
@@ -149,13 +156,9 @@ class Recipe: VoiceCommandsDelegate {
     
     func executeCommandRepeat() {
         if _currentStep != nil {
-            if _currentStep == 0 {
-                dictateDelegate?.dictate(stepText: "Gather your ingredients, and tell me next to get started.")
-            } else {
-                dictateDelegate?.dictate(stepText: steps[_currentStep! - 1])
-            }
+            dictateDelegate?.dictate(stepText: "Sure, " + steps[_currentStep!])
         } else {
-            print("Error [Recipe]: The recipe has not started yet. Cannot repeat")
+            dictateDelegate?.dictate(stepText: "Sure, first gather your ingredients. When you are ready, say...start cooking.")
         }
     }
     

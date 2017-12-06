@@ -17,6 +17,7 @@ protocol VoiceStatusDisplayDelegate {
 }
 
 protocol VoiceCommandsDelegate {
+    func executeCommandStart()
     func executeCommandNext()
     func executeCommandPrev()
     func executeCommandStop()
@@ -379,6 +380,12 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
             speakerStatus = .active
             displayDelegate?.speechRecognized(text: "stop cooking")
             commandDelegate?.executeCommandStop()
+        } else if result.contains("start cooking") {
+            pauseRecognitionTask()
+            
+            speakerStatus = .active
+            displayDelegate?.speechRecognized(text: "start cooking")
+            commandDelegate?.executeCommandStart()
         } else if result.contains("list ingredients") {
             pauseRecognitionTask()
             
