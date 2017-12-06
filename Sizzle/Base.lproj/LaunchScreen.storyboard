@@ -6,7 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -19,33 +19,36 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sizzle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8B9-kp-Kab">
-                                <rect key="frame" x="130" y="196" width="115" height="48"/>
-                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="40"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Chef Sizzle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8B9-kp-Kab" userLabel="Chef Sizzle">
+                                <rect key="frame" x="101.5" y="333.5" width="173.5" height="38.5"/>
+                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="32"/>
+                                <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Dustykeyboard Apps" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5K4-st-dtb">
-                                <rect key="frame" x="107.5" y="284" width="160" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <rect key="frame" x="104" y="606" width="167.5" height="21"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Produced for General Assembly" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="08u-yI-LhJ">
-                                <rect key="frame" x="124" y="638" width="243" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icons8-frying-pan-100-dark" translatesAutoresizingMaskIntoConstraints="NO" id="VFz-Qd-CRN" userLabel="Icon">
+                                <rect key="frame" x="134.5" y="183.5" width="150" height="150"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="150" id="6zv-J7-lXT"/>
+                                    <constraint firstAttribute="height" constant="150" id="hGw-EN-g07"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="0.81570941820567267" blue="0.14551476405275876" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.97091132614213194" green="0.76335254067215041" blue="0.13766333693104379" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="8B9-kp-Kab" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" multiplier="0.66" id="6OZ-dP-FFC"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="08u-yI-LhJ" secondAttribute="trailing" constant="8" id="OF1-gQ-HOL"/>
+                            <constraint firstItem="8B9-kp-Kab" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="B2k-Gf-tW6"/>
+                            <constraint firstItem="VFz-Qd-CRN" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="C4P-PP-cM9"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="5K4-st-dtb" secondAttribute="bottom" constant="40" id="EfN-K9-alS"/>
+                            <constraint firstItem="8B9-kp-Kab" firstAttribute="top" secondItem="VFz-Qd-CRN" secondAttribute="bottom" id="NMj-vb-lOA"/>
+                            <constraint firstItem="VFz-Qd-CRN" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" constant="22" id="TrW-GT-ymT"/>
                             <constraint firstItem="5K4-st-dtb" firstAttribute="centerX" secondItem="8B9-kp-Kab" secondAttribute="centerX" id="WTy-oA-7wZ"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="08u-yI-LhJ" secondAttribute="bottom" constant="8" id="fQc-lW-7t0"/>
-                            <constraint firstItem="8B9-kp-Kab" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="h7c-u0-VL1"/>
-                            <constraint firstItem="5K4-st-dtb" firstAttribute="top" secondItem="8B9-kp-Kab" secondAttribute="bottom" constant="40" id="yU5-Fb-dGH"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -55,4 +58,7 @@
             <point key="canvasLocation" x="52" y="374.66266866566718"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="icons8-frying-pan-100-dark" width="100" height="100"/>
+    </resources>
 </document>
