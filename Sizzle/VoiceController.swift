@@ -11,6 +11,7 @@ import Speech
 
 protocol VoiceStatusDisplayDelegate {
     func speechRecognized(text: String)
+    func statusUpdated(microphone: VoiceController.MicrophoneStatus, recognizer: VoiceController.RecognitionStatus, speech: VoiceController.SpeakerStatus)
     func microphoneUpdate(status: VoiceController.MicrophoneStatus)
     //func recognitionUpdate(status: VoiceController.RecognitionStatus)
 }
@@ -41,10 +42,31 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     var commandDelegate: VoiceCommandsDelegate?
     
     // Voice Controller Status Properties
-    //var voiceControllerStatus: VoicecControllerStatus = .idle
-    var microphoneStatus: MicrophoneStatus = .disabled
-    var recognitionStatus: RecognitionStatus = .disabled
-    var speakerStatus: SpeakerStatus = .idle
+    private var _micStatus: MicrophoneStatus = .disabled
+    private var _recStatus: RecognitionStatus = .disabled
+    private var _speakStatus: SpeakerStatus = .idle
+    
+    private var microphoneStatus: MicrophoneStatus {
+        get { return _micStatus }
+        set (value) {
+            _micStatus = value
+            displayDelegate?.statusUpdated(microphone: _micStatus, recognizer: _recStatus, speech: _speakStatus)
+        }
+    }
+    private var recognitionStatus: RecognitionStatus {
+        get { return _recStatus }
+        set (value) {
+            _recStatus = value
+            displayDelegate?.statusUpdated(microphone: _micStatus, recognizer: _recStatus, speech: _speakStatus)
+        }
+    }
+    private var speakerStatus: SpeakerStatus {
+        get { return _speakStatus }
+        set (value) {
+            _speakStatus = value
+            displayDelegate?.statusUpdated(microphone: _micStatus, recognizer: _recStatus, speech: _speakStatus)
+        }
+    }
     
     // MARK: ENUMS & STRUCTURES
     
@@ -79,10 +101,11 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     
     // MARK: HELPER FUNCTIONS
     
-    func updateMicrophone(status: MicrophoneStatus) {
+    /* replaced with getters and setters
+        func updateMicrophone(status: MicrophoneStatus) {
         microphoneStatus = status
         displayDelegate?.microphoneUpdate(status: status)
-    }
+    }*/
     
     /*func updateRecognition(status: RecognitionStatus) {
         recognitionStatus = status
@@ -117,8 +140,9 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
         speakerStatus = .idle
         
         // resume recognition
-        // need a check for if it is paused while speaking?f
-        resumeRecognitionTask()
+        if recognitionStatus != .disabled {
+            resumeRecognitionTask()
+        }
     }
     
     // MARK: RECIPE DICTATE DELEGATE
@@ -139,26 +163,6 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
         print("DEBUG [recognizer]: availability changed to", available)
     }
     
-    // MARK: SFSpeechRecognitionTaskDelegate (optional)
-    
-    /*** This is very very slow and not very useful
-    func speechRecognitionDidDetectSpeech(_ task: SFSpeechRecognitionTask) {
-        print("DEBUG [recog. task]: speech detected.")
-    }
-    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishRecognition recognitionResult: SFSpeechRecognitionResult) {
-        print("DEBUG [recog. task]: did finish with: ", recognitionResult.bestTranscription.formattedString)
-    }
-    func speechRecognitionTask(_ task: SFSpeechRecognitionTask, didFinishSuccessfully successfully: Bool) {
-        print("DEBUG [recog. task]: did finish successfully (\(successfully))")
-    }
-    func speechRecognitionTaskFinishedReadingAudio(_ task: SFSpeechRecognitionTask) {
-        print("DEBUG [recog. task]: finished reading audio.")
-    }
-    func speechRecognitionTaskWasCancelled(_ task: SFSpeechRecognitionTask) {
-        print("DEBUG [recog. task]: recognition was cancelled.")
-    }
-     ***/
-    
     // MARK: VOICE RECOGNITION
     
     // external controls
@@ -167,27 +171,29 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
         print("Log [VoiceController]: Attempting to initialize voice recognition.")
         checkSpeechRecognitionPermissions() { speechAuthorized in
             if speechAuthorized {
-//                self.updateRecognition(status: .paused)
+                self.recognitionStatus = .inactive
                 self.checkMicrophonePermissions() { microphoneAuthorized in
                     if microphoneAuthorized {
-                        self.updateMicrophone(status: .off)
+                        self.microphoneStatus = .off
                         self.setupRecognizerEngine()
                         self.startRecognitionTask()
                     } else {
-                        self.updateMicrophone(status: .disabled)
+                        self.microphoneStatus = .disabled
                     }
                 }
             } else {
-                self.updateMicrophone(status: .disabled)
+                self.recognitionStatus = .disabled
             }
         }
     }
     
+    // external functions
     func pauseRecordingSpeech() {
         if speakerStatus == .active {
             speechSynthesizer.pauseSpeaking(at: .word)
         }
         if audioEngine.isRunning {
+            displayDelegate?.speechRecognized(text: "")
             pauseRecognitionTask()
         }
     }
@@ -197,6 +203,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
             speechSynthesizer.continueSpeaking()
         }
         if !audioEngine.isRunning {
+            displayDelegate?.speechRecognized(text: "")
             resumeRecognitionTask()
         }
     }
@@ -231,8 +238,8 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
         print("Log [VoiceController]: Starting voice recognition session.")
         
         // make sure the results text field is empty
-        //displayDelegate?.speechRecognized(text: "")
         print("DEBUG [recognitionTask]: start")
+        displayDelegate?.speechRecognized(text: "")
         recognitionStatus = .active
         setupRecognitionTask()
         
@@ -243,6 +250,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
         
         // resume recognitionTask
         print("DEBUG [recognitionTask]: resume")
+        displayDelegate?.speechRecognized(text: "")
         recognitionStatus = .active
         setupRecognitionTask()
     }
@@ -256,7 +264,32 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
         print("DEBUG [recognitionTask]: new task")
         recognitionTask = speechRecognizer?.recognitionTask(with: request, resultHandler: { (result, error) in
             if self.speakerStatus != .active { // safety fencing in case recognizer picks up speech synthesis
-                if let result = result {
+                if let error = error {
+                    let code =  (error as NSError).code
+                    //code=216 on exit
+                    //code=209 ???
+                    if code == 1 || code == 203 {
+                        // code 1 = time out, or maybe finished?
+                        // code 203 = empty result/retry
+                        print("DEBUG [recognitionTask]: Code \(code): restarting")
+                        // restart recognition
+                        self.pauseRecognitionTask()
+                        self.resumeRecognitionTask()
+                    } else if code == 216 {
+                        print("DEBUG [recognitionTask]: Code 216: task cancelled.")
+                    } else if code == 4 {
+                        messageAlert(title: "Internet", message: "Could not process recorded data. Please check your internet connection.", from: nil)
+                        self.recognitionStatus = .inactive
+                        self.stopRecognitionTask()
+                    } else {
+                        print("Error [recognitionTask]: results failed.")
+                        print(code, error.localizedDescription)
+                        print(error)
+                    }
+                } else if let result = result {
+                    
+                    
+                    // get result
                     let bestString = result.bestTranscription.formattedString
                     
                     // update the display text as its processed
@@ -264,12 +297,13 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
                     
                     // check for commands
                     self.checkForCommands(result: bestString)
+                    // if no command found...start a timer. If there are results in the recognizer then the 1 minute timeout will not cause an error message
                 } else {
                     // handle failures here
-                    print("Error [recognitionTask]: results failed.")
-                    if let error = error {
-                        print(error)
-                    }
+                    
+                    //} else {
+                        print("DEBUG [recognitionTask]: no error with no results")
+                    //}
                 }
             }
         })
@@ -278,30 +312,30 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     // release engine nad recognizer
     private func stopRecognitionTask() {
         print("Log [VoiceController]: Stopping voice recognition services.")
+        
+        // stop using the microphone
+        print("DEBUG [audioEngine]: stop")
+        microphoneStatus = .off
+        request.endAudio() // Added line to mark end of recording
+        audioEngine.stop()
+        print("DEBUG [audioEngine]: remove tap")
+        audioEngine.inputNode.removeTap(onBus: 0)
+        
         recognitionStatus = .inactive
         // stop the recognition task if it is running
         print("DEBUG [recognitionTask]: stop")
         recognitionTask?.cancel()
         recognitionTask = nil
-        
-        // stop using the microphone
-        print("DEBUG [audioEngine]: stop")
-        updateMicrophone(status: .off)
-        request.endAudio() // Added line to mark end of recording
-        audioEngine.stop()
-        print("DEBUG [audioEngine]: remove tap")
-        audioEngine.inputNode.removeTap(onBus: 0)
     }
     
     private func pauseRecognitionTask() {
-        
         print("DEBUG [recognitionTask]: cancel")
         recognitionStatus = .inactive
-        recognitionTask?.cancel() // better than finish???
+        recognitionTask?.cancel() // using finish results in an error code 1, which is the same for timeout
         recognitionTask = nil
         
         print("DEBUG [audioEngine]: pause")
-        updateMicrophone(status: .off)
+        microphoneStatus = .off
         audioEngine.pause()
     }
     
@@ -310,7 +344,7 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
         print("DEBUG [audioEngine]: start")
         do {
             try audioEngine.start()
-            updateMicrophone(status: .listening)
+            microphoneStatus = .listening
         } catch { // exit on error
             print("Error [audioEngine]: could not start")
             return print(error)

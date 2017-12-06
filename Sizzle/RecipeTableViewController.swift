@@ -31,13 +31,6 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     let microphoneIdleColor = UIColor.lightGray
     let microphoneDisabledColor = UIColor.gray
     
-    // Recognizer Status Colors
-    /*struct RecognizerStatusColors {
-        static let active = UIColor.blue
-        static let disabled = UIColor.gray
-        static let paused = UIColor.lightGray
-        static let success = UIColor.green
-    }*/
     
     // MARK: ACTION FUNCTIONS
     
@@ -121,6 +114,26 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         speechRecognizerLabel.text = text
     }
     
+    func statusUpdated(microphone: VoiceController.MicrophoneStatus, recognizer: VoiceController.RecognitionStatus, speech: VoiceController.SpeakerStatus) {
+        if speech == .active {
+            startButton.isEnabled = false
+        } else {
+            startButton.isEnabled = true
+        }
+        
+        switch microphone {
+        case .listening:
+            microphoneImageView.image = UIImage(imageLiteralResourceName: "microphone-outline")
+            microphoneImageView.tintColor = microphoneActiveColor
+        case .disabled:
+            microphoneImageView.image = UIImage(imageLiteralResourceName: "microphone-mute-outline")
+            microphoneImageView.tintColor = microphoneDisabledColor
+        case .off:
+            microphoneImageView.image = UIImage(imageLiteralResourceName: "microphone-outline")
+            microphoneImageView.tintColor = microphoneIdleColor
+        }
+    }
+    
     func microphoneUpdate(status: VoiceController.MicrophoneStatus) {
         switch status {
         case .listening:
@@ -172,7 +185,9 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        currentRecipe.jumpTo(step: indexPath.row, sender: self)
+        if startButton.isEnabled { // so you cannot queue up a bunch of cell presses once dictation is happening
+            currentRecipe.jumpTo(step: indexPath.row, sender: self)
+        }
     }
 
 }
