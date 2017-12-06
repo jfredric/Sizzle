@@ -38,17 +38,20 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     @IBAction func startTapped(_ sender: UIBarButtonItem) {
         switch startButton.title ?? "nil" {
         case "Start" :
+            // turn the screen idle timer off. If the screen locks the app closes.
+            UIApplication.shared.isIdleTimerDisabled = true
+            
             // begin voice recognition
             voiceController.startRecordingSpeech()
-            
-            // currentRecipe.next()
             
             // Change button state
             startButton.title = "Pause"
         case "Pause" :
             voiceController.pauseRecordingSpeech()
             startButton.title = "Resume"
+            UIApplication.shared.isIdleTimerDisabled = false
         case "Resume" :
+            UIApplication.shared.isIdleTimerDisabled = true
             voiceController.resumeRecordingSpeech()
             startButton.title = "Pause"
         default :

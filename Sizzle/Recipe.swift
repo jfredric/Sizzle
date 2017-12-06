@@ -122,7 +122,7 @@ class Recipe: VoiceCommandsDelegate {
     }
     
     func start() {
-        if let current = _currentStep {
+        if _currentStep != nil {
             dictateDelegate?.dictate(stepText: "We are already cooking. If you meant to stop cooking then please try again.")
         } else {
             _currentStep = 0
