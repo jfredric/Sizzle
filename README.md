@@ -18,7 +18,7 @@ Currently, voice recognition is accomplished using the **SFSpeechRecognition** c
 
 #### Issues and Setbacks
 
-(expand on this) Voice recognition protocol not working as expected. call back error codes undocumented.
+Keeping track of and responding to changes in the voice recognition engine proved to be difficult. There are two methods for invoking a voice recognition task. One uses a delegate to handle the state changes and results. Which in theory would work well. Unfortunately seems to not work for some states and the results took a long time to process, making the app lag significantly. The second utilizes a closure, return results and errors. The recognition was fast and easy to set up. The state changes were passed via "error" codes. Which conceptually is an odd choice and not obviously stated. The errors themselves are not very descriptive and the error codes are not documented anywhere. Handling state changes required trial and error to guess what each one meant so that behavior could be implemented.
 
 ### Documentation
 
