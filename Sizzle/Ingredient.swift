@@ -25,7 +25,7 @@ class Ingredient {
         var readable = ""
         
         if let qty = quantity {
-            readable += String(qty)
+            readable += String(format: "%g", qty)
             if units !== UnitOfMeasure.none {
                 readable +=  " " + units.abbr
             }
@@ -40,7 +40,7 @@ class Ingredient {
     func toStringSpoken() -> String {
         var readable = ""
         if let qty = quantity {
-            readable += String(qty)
+            readable += String(format: "%g", qty)
             if units !== UnitOfMeasure.none {
                 readable += " " + (qty <= 1.0 ? units.spoken_singular : units.spoken_plural)
             }
