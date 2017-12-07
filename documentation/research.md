@@ -14,13 +14,13 @@ I wish to determine if my theory lines up with other people’s needs and prefer
 #### Research Questions
 
 1. What the most common source for recipes? Do they use their own, food blogs, cookbooks? Why?
-* What measuring standard do they use/prefer?
-* Do people have issue with touch devices while cooking?
-* Would people use a voice enabled recipe app?
-* What would convince people to switch?
-* Do they own a Google Home, Echo, or plan to get one (including homepod)?
-* Would they want or prefer integration with home devices?
-* Would this improve their cooking?
+2. What measuring standard do they use/prefer?
+3. Do people have issue with touch devices while cooking?
+4. Would people use a voice enabled recipe app?
+5. What would convince people to switch?
+6. Do they own a Google Home, Echo, or plan to get one (including homepod)?
+7. Would they want or prefer integration with home devices?
+8. Would this improve their cooking?
 
 #### Methodology
 
@@ -50,12 +50,13 @@ End Date:
 1. What recipes do people use:
  * Do you use recipes when you cook and if so where do you get them from?
  * Why?
-* What reasons do people have to using or not using electronics to help them cook:
+2. What reasons do people have to using or not using electronics to help them cook:
  * Do you use a phone, tablet or laptop when cooking?
  * How do you use it or why not?
-* What troubles do users have cooking:
+3. What troubles do users have cooking:
  * What issues do you run into when cooking?
-* Do you own any home devices like Google Home, Amazon Echo, or plan to get an Apple Homepod? If so do you use them in the kitchen, and why?
+4. Do you own any home devices like Google Home, Amazon Echo, or plan to get an Apple Homepod?
+ * If so do you use them in the kitchen, and why?
 
 ## User Research Results
 
