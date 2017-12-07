@@ -1,7 +1,7 @@
 # Sizzle
 Hear what's Cooking!
 
-<img src="assets/screenshot-single.png" alt="Drawing" height="400"/>
+<img src="assets/screenshot-single.png" alt="screenshot" height="400"/>
 
 ### Summary
 
