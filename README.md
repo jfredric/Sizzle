@@ -9,7 +9,7 @@ Chef Sizzle is a cooking assistant app written for iOS, which uses voice recogni
 
 ### General Design Approach
 
-
+When designing the application, it was important that the main feature be the voice capabilities. In most cases, the user should be able to use the app without having to look at a visual interface. The features should stand on their own and not require any input from the touch screen. The visual user interface is meant to simply mirror the state of the app IF the user does feel the need to look at it.
 
 ### Technical Implementation
 
@@ -35,7 +35,7 @@ Keeping track of and responding to changes in the voice recognition engine prove
 
 [Release Notes](documentation/release-notes.md) - Beta 0.2.0
 
-Project Proposal - \[[keynote](documentation/Proposal.key)\] \[[power point](documentation/proposal.pptx)\] \[[google slides](https://docs.google.com/presentation/d/175Emj1Y6r1BjidKc95un5fMljHHE-9Nv1oms9oDnocs/edit#slide=id.g2b9498d323_2_50)\] \[[pdf](documentation/proposal.pdf)\]
+Project Proposal - \[[keynote](documentation/Proposal.key)\] \[[power point](documentation/proposal.pptx)\] \[[google slides](https://docs.google.com/presentation/d/175Emj1Y6r1BjidKc95un5fMljHHE-9Nv1oms9oDnocs/edit?usp=sharing)\] \[[pdf](documentation/proposal.pdf)\]
 
 [Research Summary](documentation/research.md) - Summary, goals, questions, methodology, scripts, persona results, problem statement, and initial prototype UI.
 
