@@ -13,6 +13,7 @@ protocol VoiceStatusDisplayDelegate {
     func speechRecognized(text: String)
     func statusUpdated(microphone: VoiceController.MicrophoneStatus, recognizer: VoiceController.RecognitionStatus, speech: VoiceController.SpeakerStatus)
     func microphoneUpdate(status: VoiceController.MicrophoneStatus)
+    func activityIndicator(show: Bool, label: String?)
     //func recognitionUpdate(status: VoiceController.RecognitionStatus)
 }
 
@@ -164,10 +165,13 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     // initilize and begin recording speech
     func startRecordingSpeech() {
         print("Log [VoiceController]: Attempting to initialize voice recognition.")
+        
         checkSpeechRecognitionPermissions() { speechAuthorized in
+            self.displayDelegate?.activityIndicator(show: false, label: nil)
             if speechAuthorized {
                 self.recognitionStatus = .inactive
                 self.checkMicrophonePermissions() { microphoneAuthorized in
+                    self.displayDelegate?.activityIndicator(show: false, label: nil)
                     if microphoneAuthorized {
                         self.microphoneStatus = .off
                         self.speak(text: "Let's start cooking. First gather your ingredients. When you are ready say...start cooking.")
@@ -410,13 +414,15 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     // MARK: PERMISSIONS CHECK FUNCTIONS
     
     func checkMicrophonePermissions(completion handler: @escaping (Bool)->Void) {
-        let permissions
-            = AVAudioSession.sharedInstance().recordPermission()
+        displayDelegate?.activityIndicator(show: true, label: "Permissions...")
+        let permissions = AVAudioSession.sharedInstance().recordPermission()
         
         switch permissions {
         case .undetermined:
+            //displayDelegate?.activityIndicator(show: true, label: "Asking Microphone")
             requestPermissionAlert(title: "Microphone", message: "Would you like to give the app permission to use the microphone in order to hear your voice commnds? Only while cooking)", from: nil, handler: { (confirmed) in
                 if confirmed {
+                    self.displayDelegate?.activityIndicator(show: true, label: "Authorizing...")
                     AVAudioSession.sharedInstance().requestRecordPermission() { (authorized) in
                         if authorized {
                             print("Log [VoiceController]: User authorized app to use the microphone")
@@ -444,13 +450,18 @@ class VoiceController: NSObject, SFSpeechRecognizerDelegate, SFSpeechRecognition
     }
     
     func checkSpeechRecognitionPermissions(completion handler: @escaping (Bool)->Void) {
+        displayDelegate?.activityIndicator(show: true, label: "Permissions...")
         var permissions = SFSpeechRecognizer.authorizationStatus()
+        //displayDelegate?.activityIndicator(show: false, label: nil)
         
         switch permissions {
         case .notDetermined:
+            //displayDelegate?.activityIndicator(show: true, label: "Asking Recognition")
             requestPermissionAlert(title: "Speech Recognition", message: "Would you like to let the app listen for voice commands? This will only happen while cooking.", from: nil, handler: { (confirmed) in
                 if confirmed {
+                    self.displayDelegate?.activityIndicator(show: true, label: "Authorizing...")
                     SFSpeechRecognizer.requestAuthorization { (authorizationStatus) in
+                        //self.displayDelegate?.activityIndicator(show: false, label: nil)
                         permissions = authorizationStatus
                         if permissions == .denied {
                             print("Warning [VoiceController]: User has denied speech recognition permissions")

@@ -18,6 +18,9 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var startButton: UIBarButtonItem!
     @IBOutlet weak var microphoneImageView: UIImageView!
     //@IBOutlet weak var recognizerRingStatusView: UIView!
+    @IBOutlet weak var statusBoxView: UIView!
+    @IBOutlet weak var statusLabel: UILabel!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var currentRecipe: Recipe!
     
@@ -150,6 +153,18 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         case .off:
             microphoneImageView.image = UIImage(imageLiteralResourceName: "microphone-outline")
             microphoneImageView.tintColor = microphoneIdleColor
+        }
+    }
+    
+    func activityIndicator(show: Bool, label: String?) {
+        DispatchQueue.main.async {
+            self.statusBoxView.isHidden = !show
+            self.statusLabel.text = label
+            if show {
+                self.activityIndicator.startAnimating()
+            } else {
+                self.activityIndicator.stopAnimating()
+            }
         }
     }
     

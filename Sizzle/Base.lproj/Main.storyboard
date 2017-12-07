@@ -141,7 +141,7 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
-                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LHr-1G-fDE" userLabel="Status Icons Container">
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LHr-1G-fDE" userLabel="Mircophone Container">
                                 <rect key="frame" x="327" y="619" width="40" height="40"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="microphone-outline" translatesAutoresizingMaskIntoConstraints="NO" id="gUQ-L4-9af" userLabel="Microphone Image">
@@ -160,6 +160,35 @@
                                     <constraint firstAttribute="height" constant="40" id="nmp-JF-ams"/>
                                 </constraints>
                             </view>
+                            <view hidden="YES" alpha="0.84999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yTY-fn-cNe" userLabel="Status Container">
+                                <rect key="frame" x="149.5" y="295.5" width="75" height="75"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="7oQ-YA-YpR">
+                                        <rect key="frame" x="27.5" y="27.5" width="20" height="20"/>
+                                    </activityIndicatorView>
+                                    <label autoresizesSubviews="NO" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R6F-yS-ZBP" userLabel="Status Label">
+                                        <rect key="frame" x="8" y="56.5" width="59" height="14.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="CYG-Iu-Rgn"/>
+                                    <constraint firstItem="7oQ-YA-YpR" firstAttribute="centerY" secondItem="yTY-fn-cNe" secondAttribute="centerY" id="Rjy-NN-Mqh"/>
+                                    <constraint firstAttribute="height" constant="75" id="SPe-tt-ihE"/>
+                                    <constraint firstItem="7oQ-YA-YpR" firstAttribute="centerX" secondItem="yTY-fn-cNe" secondAttribute="centerX" id="VKz-KY-gPG"/>
+                                    <constraint firstItem="R6F-yS-ZBP" firstAttribute="leading" secondItem="yTY-fn-cNe" secondAttribute="leading" constant="8" id="fgp-1h-9KE"/>
+                                    <constraint firstAttribute="trailing" secondItem="R6F-yS-ZBP" secondAttribute="trailing" constant="8" id="mrg-6a-Pfh"/>
+                                    <constraint firstAttribute="bottom" secondItem="R6F-yS-ZBP" secondAttribute="bottom" constant="4" id="pMT-vx-y7B"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="8"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -168,7 +197,9 @@
                             <constraint firstItem="LHr-1G-fDE" firstAttribute="leading" secondItem="MgZ-al-x1r" secondAttribute="trailing" constant="8" id="BEc-KQ-yOF"/>
                             <constraint firstItem="dE3-gK-MOP" firstAttribute="leading" secondItem="69T-5i-tPb" secondAttribute="leading" id="BdR-GU-a6N"/>
                             <constraint firstItem="69T-5i-tPb" firstAttribute="trailing" secondItem="dE3-gK-MOP" secondAttribute="trailing" id="Dt4-wj-iV7"/>
+                            <constraint firstItem="yTY-fn-cNe" firstAttribute="centerX" secondItem="mg4-CW-ela" secondAttribute="centerX" id="FDK-Lb-Yph"/>
                             <constraint firstItem="LHr-1G-fDE" firstAttribute="leading" secondItem="MgZ-al-x1r" secondAttribute="trailing" constant="8" id="Nal-68-Rsu"/>
+                            <constraint firstItem="yTY-fn-cNe" firstAttribute="centerY" secondItem="mg4-CW-ela" secondAttribute="centerY" id="W8n-Z7-lmM"/>
                             <constraint firstItem="69T-5i-tPb" firstAttribute="bottom" secondItem="LHr-1G-fDE" secondAttribute="bottom" constant="8" id="ZTQ-Zq-Vrc"/>
                             <constraint firstItem="69T-5i-tPb" firstAttribute="trailing" secondItem="LHr-1G-fDE" secondAttribute="trailing" constant="8" id="bf5-yT-FKo"/>
                             <constraint firstItem="LHr-1G-fDE" firstAttribute="top" secondItem="dE3-gK-MOP" secondAttribute="bottom" constant="8" id="ste-8R-UdS"/>
@@ -185,9 +216,12 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="activityIndicator" destination="7oQ-YA-YpR" id="awR-0q-Gth"/>
                         <outlet property="microphoneImageView" destination="gUQ-L4-9af" id="7JE-So-z4E"/>
                         <outlet property="speechRecognizerLabel" destination="4e0-3o-BER" id="pXa-be-hak"/>
                         <outlet property="startButton" destination="mfk-QB-xCS" id="h5h-Bu-mVM"/>
+                        <outlet property="statusBoxView" destination="yTY-fn-cNe" id="rWN-PX-eK6"/>
+                        <outlet property="statusLabel" destination="R6F-yS-ZBP" id="iKX-i6-F1j"/>
                         <outlet property="tableView" destination="dE3-gK-MOP" id="4Tf-xU-Xkh"/>
                     </connections>
                 </viewController>
