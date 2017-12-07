@@ -48,15 +48,15 @@ End Date:
 
 #### Script
 1. What recipes do people use:
- * Do you use recipes when you cook and if so where do you get them from?
- * Why?
+  *  Do you use recipes when you cook and if so where do you get them from?
+  * Why?
 2. What reasons do people have to using or not using electronics to help them cook:
- * Do you use a phone, tablet or laptop when cooking?
- * How do you use it or why not?
+   * Do you use a phone, tablet or laptop when cooking?
+   * How do you use it or why not?
 3. What troubles do users have cooking:
  * What issues do you run into when cooking?
 4. Do you own any home devices like Google Home, Amazon Echo, or plan to get an Apple Homepod?
- * If so do you use them in the kitchen, and why?
+  * If so do you use them in the kitchen, and why?
 
 ## User Research Results
 
