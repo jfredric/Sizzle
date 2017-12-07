@@ -24,7 +24,7 @@ Currently, voice recognition is accomplished using the **SFSpeechRecognition** c
 
 [Release Notes](documentation/release-notes.md) - Beta 0.2.0
 
-[Project Proposal](documentation/Proposal.key) - Keynote slides.
+Project Proposal - \[[keynote](documentation/Proposal.key)\] \[[power point](documentation/proposal.pptx)\] \[[google slides](https://docs.google.com/presentation/d/175Emj1Y6r1BjidKc95un5fMljHHE-9Nv1oms9oDnocs/edit#slide=id.g2b9498d323_2_50)\] \[[pdf](documentation/proposal.pdf)\]
 
 [Research Summary](documentation/research.md) - Summary, goals, questions, methodology, scripts, persona results, problem statement, and initial prototype UI.
 
