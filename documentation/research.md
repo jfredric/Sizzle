@@ -109,6 +109,16 @@ We believe that by building a hands free interface for users we will make cookin
 
 Also we can help users improve their basic cooking skills and knowledge by providing context based responses based on when they ask for details. We will know this to be true when we see user confirmation/feedback or a gradual reduction in a particular users request for details.
 
+## Features Roadmap
+
+Milestone 1: Basic recipe list and core voice features
+
+Milestone 2: Advanced voice controls
+
+Milestone 3: Refined UI, expanded content
+
+Milestone 4: additional features like bookmarks, custom recipes, unit conversions
+
 ## Prototype UI
 
 ![Prototype](prototype-screenshots.png)
