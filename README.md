@@ -9,12 +9,23 @@ Chef Sizzle is a cooking assistant app written for iOS, which uses voice recogni
 
 ### General Design Approach
 
-...
 
-### Technical Implementations
 
-#### Frameworks used
-Currently, voice recognition is accomplished using the **SFSpeechRecognition** class from Apple's **Speech** framework. Speech synthesis uses the **AVSpeechSynthesizer** class from Apple's **AVFoundation** module
+### Technical Implementation
+
+**Design Patterns**
+
+Development follows the MVC design pattern.
+
+Audio events like speech synthesis and recognition are handled by their own voice controller. It uses delegation to give control of displaying voice recognition information to the view controller class. The handling of  responses to voice commands is delegated to the data model.
+
+The data model stores recipe information and maintains the state of the cooking task. Using delegation, the view controller handles how changes to data and and other state changes effect the view. Voice events are delegated to the voice controller.
+
+**Frameworks used**
+
+Voice recognition is accomplished using the SFSpeechRecognition class from Apple's Speech framework.
+
+Speech synthesis uses the **AVSpeechSynthesizer** class from Apple's **AVFoundation** module
 
 #### Issues and Setbacks
 
