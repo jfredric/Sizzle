@@ -13,10 +13,10 @@ Hear what's Cooking!
 
 ### Technical Implementations
 
-##### Frameworks used
+#### Frameworks used
 Currently, voice recognition is accomplished using the **SFSpeechRecognition** class from Apple's **Speech** framework. Speech synthesis uses the **AVSpeechSynthesizer** class from Apple's **AVFoundation** module
 
-##### Issues and Setbacks
+#### Issues and Setbacks
 
 (expand on this) Voice recognition protocol not working as expected. call back error codes undocumented.
 
