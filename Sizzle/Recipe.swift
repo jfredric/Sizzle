@@ -163,8 +163,14 @@ class Recipe: VoiceCommandsDelegate {
     }
     
     func executeCommandListIngredients() {
-        for ingredient in ingredients {
-            dictateDelegate?.dictate(stepText: ingredient.toStringSpoken())
+        for (index, ingredient) in ingredients.enumerated() {
+            if index == 0 {
+                dictateDelegate?.dictate(stepText: "You will need " + ingredient.toStringSpoken())
+            } else if index == ingredients.count - 1 {
+                dictateDelegate?.dictate(stepText: "and " + ingredient.toStringSpoken())
+            } else {
+                dictateDelegate?.dictate(stepText: ingredient.toStringSpoken())
+            }
         }
     }
     

@@ -36,9 +36,6 @@ class Ingredient {
          static let SevenEigths = "\u{215D}"
     }
     
-    
-    
-    
     init(name: String, namePlural: String, quantity: Double?, units: UnitOfMeasure) {
         self.name = name
         self.namePlural = namePlural
@@ -63,7 +60,7 @@ class Ingredient {
             case SwiftFractions.OneThird :
                 readable += (qty >= 1 ? String(format: "%g", floor(qty)) : "") + UnicodeFractions.OneThird
             case SwiftFractions.TwoThirds :
-                readable += (qty >= 1 ? String(format: "%g", floor(qty)) : "") + UnicodeFractions.OneThird
+                readable += (qty >= 1 ? String(format: "%g", floor(qty)) : "") + UnicodeFractions.TwoThirds
             case SwiftFractions.OneEigth :
                 readable += (qty >= 1 ? String(format: "%g", floor(qty)) : "") + UnicodeFractions.OneEigth
             case SwiftFractions.ThreeEigths :
@@ -89,9 +86,33 @@ class Ingredient {
     func toStringSpoken() -> String {
         var spoken = ""
         if let qty = quantity {
-            spoken += String(format: "%g", qty)
+            let whole = floor(qty)
+            let fraction = qty - whole
+            
+            switch fraction {
+            case 0.5 :
+                spoken += (qty >= 1 ? String(format: "%g", floor(qty)) + " and " : "") + "one half"
+            case 0.25 :
+                spoken += (qty >= 1 ? String(format: "%g", floor(qty)) + " and " : "") + "one quarter"
+            case 0.75 :
+                spoken += (qty >= 1 ? String(format: "%g", floor(qty)) + " and " : "") + "3 quarters"
+            case SwiftFractions.OneThird :
+                spoken += (qty >= 1 ? String(format: "%g", floor(qty)) + " and " : "") + "one third"
+            case SwiftFractions.TwoThirds :
+                spoken += (qty >= 1 ? String(format: "%g", floor(qty)) + " and " : "") + "two thirds"
+            case SwiftFractions.OneEigth :
+                spoken += (qty >= 1 ? String(format: "%g", floor(qty)) + " and " : "") + "one eigth"
+            case SwiftFractions.ThreeEigths :
+                spoken += (qty >= 1 ? String(format: "%g", floor(qty)) + " and " : "") + "three eigths"
+            case SwiftFractions.FiveEigths :
+                spoken += (qty >= 1 ? String(format: "%g", floor(qty)) + " and " : "") + "five eigths"
+            case SwiftFractions.SevenEigths :
+                spoken += (qty >= 1 ? String(format: "%g", floor(qty)) + " and " : "") + "seven eigths"
+            default :
+                spoken += String(format: "%g", qty)
+            }
             if units !== UnitOfMeasure.none {
-                spoken += " " + (qty <= 1.0 ? units.spoken_singular : units.spoken_plural)
+                spoken += " " + (qty <= 1.0 ? units.spoken_singular : units.spoken_plural) + " of"
             }
             spoken += " " + (qty <= 1.0 ? name : namePlural)
         } else {
