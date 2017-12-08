@@ -43,6 +43,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         case "Start" :
             // turn the screen idle timer off. If the screen locks the app closes.
             UIApplication.shared.isIdleTimerDisabled = true
+            tableView.allowsSelection = true
             
             // begin voice recognition
             voiceController.startRecordingSpeech()
@@ -53,8 +54,10 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
             voiceController.pauseRecordingSpeech()
             startButton.title = "Resume"
             UIApplication.shared.isIdleTimerDisabled = false
+            tableView.allowsSelection = false
         case "Resume" :
             UIApplication.shared.isIdleTimerDisabled = true
+            tableView.allowsSelection = true
             voiceController.resumeRecordingSpeech()
             startButton.title = "Pause"
         default :
@@ -70,9 +73,12 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 140
         
+        tableView.allowsSelection = false
+        
         // Set various delegates
         tableView.delegate = self
         tableView.dataSource = self
+        
         
         voiceController.displayDelegate = self
         voiceController.commandDelegate = currentRecipe
@@ -125,8 +131,11 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     func statusUpdated(microphone: VoiceController.MicrophoneStatus, recognizer: VoiceController.RecognitionStatus, speech: VoiceController.SpeakerStatus) {
         if speech == .active {
             startButton.isEnabled = false
+            tableView.allowsSelection = false
+            
         } else {
             startButton.isEnabled = true
+            tableView.allowsSelection = true
         }
         
         switch microphone {
@@ -221,7 +230,7 @@ class RecipeTableViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if startButton.isEnabled { // so you cannot queue up a bunch of cell presses once dictation is happening
+        if startButton.isEnabled && startButton.title == "Pause" { // so you cannot queue up a bunch of cell presses once dictation is happening
             currentRecipe.jumpTo(step: indexPath.row, sender: self)
         }
     }
