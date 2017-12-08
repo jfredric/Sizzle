@@ -14,6 +14,31 @@ class Ingredient {
     var quantity: Double?
     var units: UnitOfMeasure
     
+    // MARK: CONSTANTS
+    struct SwiftFractions {
+         static let OneThird: Double = 1.0 / 3.0
+         static let TwoThirds: Double = 1.0 / 3.0
+         static let OneEigth: Double = 1.0 / 8.0
+         static let ThreeEigths: Double = 3.0 / 8.0
+         static let FiveEigths: Double = 5.0 / 8.0
+         static let SevenEigths: Double = 7.0 / 8.0
+    }
+    
+    struct UnicodeFractions {
+         static let OneHalf = "\u{00BD}"
+         static let OneQuarter = "\u{00BC}"
+         static let ThreeQuarter = "\u{00BE}"
+         static let OneThird = "\u{2153}"
+         static let TwoThirds = "\u{2154}"
+         static let OneEigth = "\u{215B}"
+         static let ThreeEigths = "\u{215C}"
+         static let FiveEigths = "\u{215E}"
+         static let SevenEigths = "\u{215D}"
+    }
+    
+    
+    
+    
     init(name: String, namePlural: String, quantity: Double?, units: UnitOfMeasure) {
         self.name = name
         self.namePlural = namePlural
@@ -25,7 +50,31 @@ class Ingredient {
         var readable = ""
         
         if let qty = quantity {
-            readable += String(format: "%g", qty)
+            let whole = floor(qty)
+            let fraction = qty - whole
+            
+            switch fraction {
+            case 0.5 :
+                readable += (qty >= 1 ? String(format: "%g", floor(qty)) : "") + UnicodeFractions.OneHalf
+            case 0.25 :
+                readable += (qty >= 1 ? String(format: "%g", floor(qty)) : "") + UnicodeFractions.OneQuarter
+            case 0.75 :
+                readable += (qty >= 1 ? String(format: "%g", floor(qty)) : "") + UnicodeFractions.ThreeQuarter
+            case SwiftFractions.OneThird :
+                readable += (qty >= 1 ? String(format: "%g", floor(qty)) : "") + UnicodeFractions.OneThird
+            case SwiftFractions.TwoThirds :
+                readable += (qty >= 1 ? String(format: "%g", floor(qty)) : "") + UnicodeFractions.OneThird
+            case SwiftFractions.OneEigth :
+                readable += (qty >= 1 ? String(format: "%g", floor(qty)) : "") + UnicodeFractions.OneEigth
+            case SwiftFractions.ThreeEigths :
+                readable += (qty >= 1 ? String(format: "%g", floor(qty)) : "") + UnicodeFractions.ThreeEigths
+            case SwiftFractions.FiveEigths :
+                readable += (qty >= 1 ? String(format: "%g", floor(qty)) : "") + UnicodeFractions.FiveEigths
+            case SwiftFractions.SevenEigths :
+                readable += (qty >= 1 ? String(format: "%g", floor(qty)) : "") + UnicodeFractions.SevenEigths
+            default :
+                readable += String(format: "%g", qty)
+            }
             if units !== UnitOfMeasure.none {
                 readable +=  " " + units.abbr
             }
@@ -38,17 +87,17 @@ class Ingredient {
     }
     
     func toStringSpoken() -> String {
-        var readable = ""
+        var spoken = ""
         if let qty = quantity {
-            readable += String(format: "%g", qty)
+            spoken += String(format: "%g", qty)
             if units !== UnitOfMeasure.none {
-                readable += " " + (qty <= 1.0 ? units.spoken_singular : units.spoken_plural)
+                spoken += " " + (qty <= 1.0 ? units.spoken_singular : units.spoken_plural)
             }
-            readable += " " + (qty <= 1.0 ? name : namePlural)
+            spoken += " " + (qty <= 1.0 ? name : namePlural)
         } else {
-            readable += name
+            spoken += name
         }
         
-        return readable
+        return spoken
     }
 }
